@@ -1103,8 +1103,8 @@ msgstr "Laden..."
 msgid "Kegs"
 msgstr "Fusten"
 
-msgid "Kassa"
-msgstr "Point of sale"
+msgid "Point of sale"
+msgstr "Kassa"
 
 msgid "AJAX-request required"
 msgstr "AJAX-request verplicht"
