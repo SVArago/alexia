@@ -1,3 +1,4 @@
+import collections
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
@@ -40,12 +41,12 @@ def overview(request):
         'participants', 'location').order_by('starts_at')
     events = events.prefetch_related(Prefetch('bartender_availabilities',
                                               queryset=BartenderAvailability.objects.filter(
-                                                  availability__nature=Availability.YES),
-                                              to_attr='bartender_availabilities_yes'),
-                                     'bartender_availabilities_yes__user',
+                                                  availability__nature=Availability.ASSIGNED),
+                                              to_attr='bartender_availabilities_assigned'),
+                                     'bartender_availabilities_assigned__user',
                                      Prefetch('bartender_availabilities',
                                               queryset=BartenderAvailability.objects.filter(
-                                                  Q(availability__nature=Availability.YES),
+                                                  Q(availability__nature=Availability.ASSIGNED),
                                                   Q(user__profile__is_iva=True) |
                                                   Q(user__profile__certificate__approved_at__isnull=False)),
                                               to_attr='bartender_availabilities_iva'),
@@ -82,13 +83,19 @@ def overview(request):
     events = events.distinct()
 
     if request.user.is_authenticated():
-        events_tending = events.filter(bartender_availabilities__availability__nature=Availability.YES,
+        events_tending = events.filter(bartender_availabilities__availability__nature=Availability.ASSIGNED,
                                        bartender_availabilities__user=request.user) \
             .select_related(None).prefetch_related(None).order_by()
 
     # Beschikbaarheden in een lijstje stoppen
-    availabilities = list(request.organization.availabilities.all()) \
-        if request.organization else []
+    if not request.organization:
+        availabilities = []
+    elif request.user.is_superuser \
+            or request.user.profile.is_planner(request.organization) \
+            or not request.organization.assigns_tenders:
+        availabilities = list(request.organization.availabilities.all())
+    else:
+        availabilities = list(request.organization.availabilities.exclude(nature=Availability.ASSIGNED))
     # Net als onze BartenderAvailabilities
     bartender_availabilities = BartenderAvailability.objects.filter(
         user_id=request.user.pk).values('event_id', 'availability_id')
@@ -99,6 +106,9 @@ def overview(request):
         request.user.profile.is_planner(request.organization))
     is_tender = request.organization and request.user.profile.is_tender(
         request.organization)
+
+    # Gebruiker opslaan
+    user = request.user
 
     return render(request, 'scheduling/overview_list.html', locals())
 
@@ -114,19 +124,19 @@ def event_show(request, pk):
     if event.organizer != request.organization:
         raise PermissionDenied
 
-    tenders = Membership.objects.filter(
+    tenders = Membership.objects.select_related('user').filter(
         organization__in=event.participants.all(), is_tender=True). \
         order_by("user__first_name")
+    bas = collections.defaultdict(list)
 
-    availability = BartenderAvailability.objects.filter(event=event)
-    available_yes = availability.filter(
-        availability__nature=Availability.YES). \
-        values_list('user_id', flat=True)
-    available_maybe = availability.filter(
-        availability__nature=Availability.MAYBE). \
-        values_list('user_id', flat=True)
-    available_no = availability.filter(
-        availability__nature=Availability.NO).values_list('user_id', flat=True)
+    for ba in BartenderAvailability.objects.select_related().filter(event=event):
+        bas[ba.user].append(ba)
+
+    availabilities = []
+    for t in tenders:
+        ba = bas[t.user]
+        a = ba[0].availability if ba else None
+        availabilities.append(dict({'user': t.user, 'availability': a}))
 
     is_manager = request.user.profile.is_manager(request.organization)
 
@@ -241,6 +251,21 @@ def set_bartender_availability(request):
             event.is_closed:
         raise PermissionDenied
 
+    # When the organizer assigns tenders, only planners and higher are allowed
+    # to set availability to assigned.
+    if event.organizer.assigns_tenders and \
+            not request.user.is_superuser and \
+            not request.user.profile.is_planner(event.organizer) and \
+            availability.nature == Availability.ASSIGNED:
+        raise PermissionDenied
+
+    # And if you're already assigned, you can't change your own availability.
+    if event.organizer.assigns_tenders and \
+            not request.user.is_superuser and \
+            not request.user.profile.is_planner(event.organizer) and \
+            request.user in event.get_assigned_bartenders():
+        raise PermissionDenied
+
     if request.method == 'POST' and request.is_ajax():
         bartender_availability, is_new_record = \
             BartenderAvailability.objects.get_or_create(
@@ -256,7 +281,7 @@ def set_bartender_availability(request):
         else:
             log.availability_created(
                 request.user, event, request.user, availability)
-        return render(request, 'scheduling/partials/available_bartenders.html',
+        return render(request, 'scheduling/partials/assigned_bartenders.html',
                       {'e': event})
     else:
         # TODO Better error message and HTTP status code [JZ]
@@ -287,7 +312,7 @@ def ical(request):
 def personal_ical(request, ical_id):
     profile = get_object_or_404(Profile, ical_id=ical_id)
     bas = profile.user.bartender_availability_set.filter(
-        availability__nature=Availability.YES,
+        availability__nature=Availability.ASSIGNED,
         event__starts_at__gte=timezone.now() - timedelta(100)
     ). order_by('event__starts_at')
     events = []
