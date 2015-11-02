@@ -1,11 +1,11 @@
 # Alexia
 
-[![Build Status](https://travis-ci.org/Inter-Actief/alexia.svg?branch=master)](https://travis-ci.org/Inter-Actief/alexia)
-[![Requirements Status](https://requires.io/github/Inter-Actief/alexia/requirements.svg?branch=master)](https://requires.io/github/Inter-Actief/alexia/requirements/?branch=master)
+[![Build Status](https://travis-ci.org/SVArago/alexia.svg?branch=master)](https://travis-ci.org/SVArago/alexia)
+[![Requirements Status](https://requires.io/github/SVArago/alexia/requirements.svg?branch=master)](https://requires.io/github/SVArago/alexia/requirements/?branch=master)
 
  * Alexia is het borrelbeheersysteem voor de borrelruimtes in de
    Zilverling op de Universiteit Twente, de Abscint en MBasement.
- * [alex.ia.utwente.nl](https://alex.ia.utwente.nl)
+ * [tap.arago.utwente.nl](https://tap.arago.utwente.nl)
 
 ## Projectstructuur
 
