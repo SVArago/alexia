@@ -8,7 +8,7 @@
     <h1>Help</h1>
 </div>
 <p>
-    Alexia is het borrelbeheersysteem van de studieverenigingen van de faculteiten EWI en MB, samenwerkend in Stichting Borrelbeheer Zilverling. In dit systeem worden de borrelruimtes gereserveerd en in de toekomst kunnen ook verbruik en verkoop geregistreerd worden.
+    Alexia is het borrelbeheersysteem van de studieverenigingen van de faculteit TNW, samenwerkend in Stichting TAP. In dit systeem wordt de borrelruimte gereserveerd en kunnen ook verbruik en verkoop geregistreerd worden.
 </p>
 <h2>
     Inhoudsopgave
@@ -24,10 +24,10 @@
     Inloggen
 </h2>
 <p>
-    Het inloggen in Alexia gaat door middel van je UTwente-account (s- of m-nummer en bijbehorend wachtwoord). Het wachtwoord voor het oude borrelbeheersysteem wordt dus niet meer gebruikt.
+    Het inloggen in Alexia gaat door middel van je UTwente-account (s- of m-nummer en bijbehorend wachtwoord).
 </p>
 <p>
-    Op de inlogpagina kan je tevens aangeven voor welke vereniging je inlogt, door het logo van die vereniging aan te klikken.
+    Op de inlogpagina kan je tevens aangeven voor welke borrelcommissie je inlogt, door het logo van die borrelcommissie aan te klikken.
 </p>
 <h3>
     Eerste keer inloggen
@@ -39,10 +39,10 @@
     Beschikbaarheid aangeven
 </h2>
 <p>
-    Als je een tapper bent voor een vereniging, kun je je beschikbaarheid aangeven onder de knop <a href="{% url 'apps.scheduling.views.overview' %}">Planning</a>. Op deze pagina kun je alle ingeplande borrels zien. Bij de borrels waar jouw vereniging deelneemt, kun je met het keuzemenu rechts aangeven of je die borrel wilt tappen.
+    Als je een tapper bent voor een borrelcommissie, kun je je beschikbaarheid aangeven onder de knop <a href="{% url 'apps.scheduling.views.overview' %}">Planning</a>. Op deze pagina kun je alle ingeplande borrels zien. Bij de borrels waar jouw borrelcommissie deelneemt, kun je met het keuzemenu rechts aangeven of je die borrel wilt tappen.
 </p>
 <p>
-    <em>Kan je je beschikbaarheid niet wijzigen?</em> Controleer dan of je de juiste vereniging hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als tapper bent geregistreerd bij je vereniging. Verder kan het zijn dat het aangeven van de beschikbaarheid is uitgeschakeld voor een borrel.
+    <em>Kan je je beschikbaarheid niet wijzigen?</em> Controleer dan of je de juiste borrelcommissie hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als tapper bent geregistreerd bij je borrelcommissie. Verder kan het zijn dat het aangeven van de beschikbaarheid is uitgeschakeld voor een borrel.
 </p>
 <h2 id="plannen">
     Borrels plannen
@@ -55,7 +55,7 @@
         Participants
     </dt>
     <dd>
-        Geeft aan welke vereniging meedoen met deze activiteit. Tappers van de verenigingen die je selecteerd kunnen zich inschrijven als tapper voor de borrel.
+        Geeft aan welke borrelcommissies meedoen met deze activiteit. Tappers van de borrelcommissies die je selecteerd kunnen zich inschrijven als tapper voor de borrel.
     </dd>
     <dt>
         Naam
@@ -103,17 +103,17 @@
         Prijscategorie
     </dt>
     <dd>
-        De categorie voor verkoopprijzen voor deze borrel. Wordt momenteel niet gebruikt.
+        De verkoopprijzen voor deze borrel.
     </dd>
 </dl>
 <p>
-    <em>Kan je geen borrels plannen of wijzigen?</em> Controleer dan of je de juiste vereniging hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als planner bent geregistreerd bij je vereniging.
+    <em>Kan je geen borrels plannen of wijzigen?</em> Controleer dan of je de juiste borrelcommissie hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als planner bent geregistreerd bij je borrelcommissie.
 </p>
 <h2 id="tappersbeheren">
     Tappers beheren
 </h2>
 <p>
-    Op de pagina <a href="{% url 'apps.organization.views.membership_list' %}">Gebruikers</a> kunnen Managers van de vereniging de tappers, planners en managers van de vereniging bekijken, toevogen, bewerken of verwijderen.
+    Op de pagina <a href="{% url 'apps.organization.views.membership_list' %}">Gebruikers</a> kunnen Managers van de borrelcommissie de tappers, planners en managers van de borrelcommissie bekijken, toevogen, bewerken of verwijderen.
 </p>
 <dl>
     <dt>
@@ -145,15 +145,15 @@
     Als een persoon voor de eerste keer wordt toegevoegd aan het systeem, moet je ook zijn voornaam, achternaam en e-mailadres invullen.
 </p>
 <p>
-    <em>Kan je geen tappes inzien of wijzigen?</em> Controleer dan of je de juiste vereniging hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als manager bent geregistreerd bij je vereniging.
+    <em>Kan je geen tappers inzien of wijzigen?</em> Controleer dan of je de juiste borrelcommissie hebt geselecteerd rechts bovenaan de pagina. Bij <a href="{% url 'apps.profile.views.index' %}">Mijn profiel</a> (kopje <em>Autorisatie</em>) kun je controleren of je ook als manager bent geregistreerd bij je borrelcommissie.
 </p>
 <h2 id="bugs">
     Fouten of suggesties?
 </h2>
 <p>
-    Als je een probleem hebt met de planning van een borrel, kun je contact opnemen met het bestuur van Stichting Borrelbeheer Zilverling via {% hide_email "overleg@sbz.utwente.nl" %}.
+    Als je een probleem hebt met de planning van een borrel, kun je contact opnemen met het bestuur van Stichting TAP via {% hide_email "tapbestuur@arago.utwente.nl" %}.
 </p>
 <p>
-    Heb je een fout gevonden in dit borrelbeheersysteem of heb je suggesties voor verbetering, dat kun je contact opnemen met de <a href="https://www.inter-actief.utwente.nl/commissies/2/www-commissie/">WWW-commissie</a> van Inter-<i>Actief</i> via {% hide_email "www@inter-actief.net" %}.
+    Heb je een fout gevonden in dit borrelbeheersysteem of heb je suggesties voor verbetering, dat kun je contact opnemen met de Webber van S.V. Arago via {% hide_email "webber@arago.utwente.nl" %}.
 </p>
 {% endblock %}
