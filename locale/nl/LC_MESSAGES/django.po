@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-02 01:56+0100\n"
+"POT-Creation-Date: 2015-11-02 02:16+0100\n"
 "PO-Revision-Date: 2015-09-21 21:14+0200\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
 "Language: nl\n"
@@ -1107,6 +1107,10 @@ msgstr "Tappersinstructie"
 #, python-format
 msgid "No events have been planned from %(s)s until %(e)s."
 msgstr "Er zijn geen activiteiten gepland van %(s)s tot %(e)s."
+
+#, python-format
+msgid "No events have been planned after %(s)s."
+msgstr "Er zijn geen activiteiten gepland na %(s)s."
 
 msgid "Loading..."
 msgstr "Laden..."
