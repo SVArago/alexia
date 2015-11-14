@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-02 02:16+0100\n"
+"POT-Creation-Date: 2015-11-10 12:05+0100\n"
 "PO-Revision-Date: 2015-09-21 21:14+0200\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
 "Language: nl\n"
@@ -36,7 +36,6 @@ msgstr "productgroep"
 msgid "price"
 msgstr "prijs"
 
-#, python-brace-format
 msgid "{pricegroup}: {productgroup} for {price}"
 msgstr "{pricegroup}: {productgroup} voor {price}"
 
@@ -354,6 +353,9 @@ msgstr "optie"
 msgid "Tender comments"
 msgstr "Tappersinstructie"
 
+msgid "risky"
+msgstr "risicoactiviteit"
+
 msgid "events"
 msgstr "activiteiten"
 
@@ -579,6 +581,9 @@ msgstr "Gebruikersnaam"
 msgid "Password"
 msgstr "Wachtwoord"
 
+msgid "Error"
+msgstr "Fout"
+
 msgid "Permanent product"
 msgstr "Permanent product"
 
@@ -758,9 +763,6 @@ msgid ""
 msgstr ""
 "Nog niet al jouw gegevens zijn bekend bij Alexia, voer deze in om verder te "
 "mogen."
-
-msgid "Error"
-msgstr "Fout"
 
 msgid "Create user"
 msgstr "Gebruiker aanmaken"
@@ -1117,6 +1119,9 @@ msgstr "Laden..."
 
 msgid "Kegs"
 msgstr "Fusten"
+
+msgid "Risky activity"
+msgstr "Risicoactiviteit"
 
 msgid "Point of sale"
 msgstr "Kassa"
