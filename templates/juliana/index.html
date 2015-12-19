@@ -115,7 +115,10 @@
                         <div class="row">
                             {% for user in group %}
                                 <div class="btn-container">
-                                    <a href="#" class="btn btn-default btn-block command" data-command="payUser" data-user="{{ user.id }}">{{ user.first_name }}</a>
+                                    <a href="#" class="btn btn-default btn-block command" data-command="payUser"
+                                       data-user-id="{{ user.id }}" data-user-first-name="{{ user.first_name }}" data-user-last-name="{{ user.last_name }}">
+                                        {{ user.first_name }}
+                                    </a>
                                 </div>
                             {% endfor %}
                         </div>
@@ -132,7 +135,7 @@
         <div class="row">
             <div class="col-xs-10 col-xs-offset-1" id="countdownbox">
                 <div class="alert alert-info">
-                    <span id="payment-in">Automatisch betalen over:</span>
+                    <span id="payment-in">Afrekenen voor <span id="payment-name"></span> over:</span>
                     <span id="payment-countdown">{{ countdown }}</span>
                 </div>
             </div>

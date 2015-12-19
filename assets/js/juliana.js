@@ -27,7 +27,6 @@ State = {
 
                 clearInterval(Receipt.counterInterval);
                 Receipt.clear();
-                $('#payment-receipt').html('');
                 $('#cashier-screen').show();
                 break;
             case this.CHECK:
@@ -38,20 +37,6 @@ State = {
                 console.log('Changing to PAYING...');
                 this.current = this.PAYING;
                 this._hideAllScreens();
-
-                var receipt = Receipt.receipt;
-                var receiptHTML = '';
-                var total = 0;
-                for (var i = 0; i < receipt.length; i++) {
-                    receiptHTML += '<tr>';
-                    receiptHTML += '<td>' + Settings.products[receipt[i].product].name + '</td>';
-                    receiptHTML += '<td>' + receipt[i].amount + '</td>';
-                    receiptHTML += '<td>&euro;' + (receipt[i].price / 100).toFixed(2) + '</td>';
-                    receiptHTML += '</tr>';
-                    total += receipt[i].price;
-                }
-                receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + (total / 100).toFixed(2) + '</strong></td></tr>';
-                $('#payment-receipt').html(receiptHTML);
 
                 $('#rfid-screen').show();
                 break;
@@ -223,28 +208,41 @@ Receipt = {
         this.receipt = [];
         this.updateTotalAmount();
     },
-    pay: function (rfid) {
-        State.toggleTo(State.PAYING);
+    buildPaymentReceipt: function (user) {
+        var receipt = Receipt.receipt;
+        var receiptHTML = '';
+        var total = 0;
+        for (var i = 0; i < receipt.length; i++) {
+            receiptHTML += '<tr>';
+            receiptHTML += '<td>' + Settings.products[receipt[i].product].name + '</td>';
+            receiptHTML += '<td>' + receipt[i].amount + ' &times;</td>';
+            receiptHTML += '<td>&euro;' + (receipt[i].price / 100).toFixed(2) + '</td>';
+            receiptHTML += '</tr>';
+            total += receipt[i].price;
+        }
+        receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + (total / 100).toFixed(2) + '</strong></td></tr>';
 
-        console.log('Card scanned. Retrieving userData for: ' + rfid);
+        $('#payment-receipt').html(receiptHTML);
+        $('#payment-name').text(user.first_name);
+    },
+    pay: function (rfid) {
+        console.log('Card scanned, retrieving data');
         User.retrieveData(rfid, function (result) {
             Receipt.continuePay(result, rfid);
         });
-
     },
     continuePay: function (userData, rfid) {
-        console.log('continuePay was called: ');
-        console.log(userData);
+        console.log('continuePay was called');
         if (!userData) {
             State.toggleTo(State.ERROR, 'RFID card retrieval failed');
         } else if (userData.error) {
             State.toggleTo(State.ERROR, 'Error authenticating: ' + userData.error.message);
         } else {
             console.log('Userdata received correctly.');
-            Receipt.payForUser(userData.result.user.id, rfid);
+            Receipt.payForUser(userData.result.user, rfid);
         }
     },
-    payForUser: function (userId, rfid) {
+    payForUser: function (user, rfid) {
         if (Receipt.receipt.length == 0) {
             console.log('Info: receipt empty');
             Display.set('Please select products!');
@@ -252,12 +250,13 @@ Receipt = {
         }
 
         console.log('Starting pay countdown');
+        Receipt.buildPaymentReceipt(user);
         if (State.current != State.PAYING)
             State.toggleTo(State.PAYING);
 
         Receipt.payData = {
             event_id: Settings.event_id,
-            user_id: userId,
+            user_id: user.id,
             purchases: Receipt.receipt,
             rfid_data: rfid
         };
@@ -428,7 +427,8 @@ $(function () {
                 Receipt.payNow();
                 break;
             case 'payUser':
-                Receipt.payForUser($(this).data('user'), null);
+                var user = { id: $(this).data('user-id'), first_name: $(this).data('user-first-name'), last_name: $(this).data('user-last-name') };
+                Receipt.payForUser(user, null);
                 break;
             case 'ok':
                 State.toggleTo(State.SALES);
