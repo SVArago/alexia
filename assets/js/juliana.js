@@ -10,20 +10,6 @@ _pad = function (n, c) {
     return n.length < c ? _pad('0' + n, c, '0') : n;
 };
 
-/*
- * LOG - logger status
- */
-Log = {
-    log: function (text) {
-        var d = new Date();
-        var h = d.getHours();
-        var m = d.getMinutes();
-        if (h < 10) h = '0' + h;
-        if (m < 10) m = '0' + m;
-        $('#log-table').append('<tr><td width="20%">[' + h + ':' + m + ']</td><td>' + text + '</td></li>');
-    }
-};
-
 State = {
     SALES: 0,
     PAYING: 1,
@@ -37,13 +23,11 @@ State = {
             case this.SALES:
                 console.log('Changing to SALES...');
                 this.current = this.SALES;
+                this._hideAllScreens();
 
                 clearInterval(Receipt.counterInterval);
                 Receipt.clear();
                 $('#payment-receipt').html('');
-                $('#countdownbox').show();
-
-                this._hideAllScreens();
                 $('#cashier-screen').show();
                 break;
             case this.CHECK:
@@ -72,11 +56,11 @@ State = {
                 $('#rfid-screen').show();
                 break;
             case this.ERROR:
+                console.log('Changing to ERROR...');
                 this.current = this.ERROR;
                 this._hideAllScreens();
 
                 $('#current-error').html(argument);
-
                 $('#error-screen').show();
                 break;
             case this.MESSAGE:
@@ -88,7 +72,7 @@ State = {
                 $('#message-screen').show();
                 break;
             default:
-                console.log('Error: no known state');
+                console.log('Error: switching to unknown state');
                 break;
         }
         $('.btn').attr('draggable', false).on('dragstart', function () {
@@ -131,7 +115,6 @@ Scanner = {
             var rfid = JSON.parse(event.data);
             scanner.action(rfid);
         };
-
     },
     action: function (rfid) {
         console.log('CurrentState: ' + State.current);
@@ -164,7 +147,7 @@ Display = {
 };
 
 /*
- * RECEIPT - left panel
+ * RECEIPT - right panel
  */
 Receipt = {
     receipt: [],
@@ -234,10 +217,6 @@ Receipt = {
         var amount = (sum / 100).toFixed(2);
         $('#receipt-total').find('input').val('' + amount);
         return sum;
-    },
-    addText: function (text, quantity) {
-        $('#receipt-table').append('<tr><td width="70%">' + text + '</td><td>' + quantity + '</td></tr>');
-        Display.set('OK');
     },
     clear: function () {
         $('#receipt-table').empty();
@@ -328,7 +307,6 @@ Receipt = {
  */
 Input = {
     prompt: '',
-    latch_command: '',
     stroke: function (input) {
         // must be a string
         if (typeof input !== 'string') return;
@@ -342,31 +320,8 @@ Input = {
         // parse the input as integer and pass it on
         return parseInt(this.prompt);
     },
-    isEmpty: function () {
-        return this.prompt == '';
-    },
     reset: function () {
-        if (this.latch_command !== '') {
-            eval(this.latch_command);
-            this.latch_command = '';
-        }
-
         this.prompt = '';
-    },
-    latch: function (command) {
-        this.latch_command = command;
-    }
-};
-
-/*
- * SALES - individual sales, beverages not paid with a "borrelkaart"
- */
-Sales = {
-    add: function (product, quantity) {
-        // add item to receipt
-        quantity = !quantity ? 1 : quantity;
-
-        Receipt.add(product, quantity);
     }
 };
 
@@ -434,7 +389,6 @@ IAjax = {
 
 $(function () {
     Scanner.init();
-
     State.toggleTo(State.SALES);
 
     $('.btn-keypad').click(function () {
@@ -447,14 +401,13 @@ $(function () {
     });
 
     $('.command').click(function () {
-        var reset = true;
-
         switch ($(this).data('command')) {
             case 'clear':
                 Display.set('?');
                 break;
             case 'sales':
-                Sales.add($(this).data('product'), Input.read());
+                var count = !Input.read() ? 1 : Input.read();
+                Receipt.add($(this).data('product'), count);
                 break;
             case 'cancel':
                 Display.set('?');
@@ -486,6 +439,6 @@ $(function () {
                 break;
         }
 
-        if (reset) Input.reset();
+        Input.reset();
     });
 });
