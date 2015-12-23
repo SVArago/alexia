@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from apps.billing.managers import TemporaryProductManager, PermanentProductManager
 from apps.scheduling.models import Event
 from apps.organization.models import Organization
 from apps.stock.models import StockProduct
@@ -112,6 +113,7 @@ class Product(models.Model):
                                         help_text=_('Background color for Juliana'), max_length=6,
                                         validators=[RegexValidator(regex=r'^[0-9a-zA-Z]{6}$',
                                                                    message=_('Enter a valid hexadecimal color'))])
+    deleted = models.BooleanField(verbose_name=_("deleted"), default=False)
 
     @property
     def is_permanent(self):
@@ -122,6 +124,10 @@ class Product(models.Model):
     def is_temporary(self):
         """Indicates whether this is a TemporaryProduct"""
         return hasattr(self, 'temporaryproduct')
+
+    @property
+    def is_deleted(self):
+        return self.deleted
 
     def get_price(self, event):
         """Gets the price for a given event."""
@@ -160,6 +166,8 @@ class PermanentProduct(Product):
     stockproduct = models.ForeignKey(StockProduct, verbose_name=_('stock product'), blank=True, null=True)
     position = models.IntegerField(verbose_name=_('position'))
 
+    objects = PermanentProductManager()
+
     def is_permanent(self):
         return True
 
@@ -191,6 +199,8 @@ class TemporaryProduct(Product):
     """
     event = models.ForeignKey(Event, related_name='temporaryproducts', verbose_name=_('event'))
     price = models.DecimalField(_('price'), max_digits=15, decimal_places=2)
+
+    objects = TemporaryProductManager()
 
     def is_permanent(self):
         return True
