@@ -113,6 +113,7 @@ class Product(models.Model):
                                         help_text=_('Background color for Juliana'), max_length=6,
                                         validators=[RegexValidator(regex=r'^[0-9a-zA-Z]{6}$',
                                                                    message=_('Enter a valid hexadecimal color'))])
+    is_food = models.BooleanField(verbose_name=_('Is food?'), default=False)
     deleted = models.BooleanField(verbose_name=_("deleted"), default=False)
 
     @property
