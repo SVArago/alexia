@@ -123,7 +123,7 @@ Scanner = {
         socket.onmessage = function (event) {
             var rfid = JSON.parse(event.data);
             scanner.action(rfid);
-        }
+        };
 
     },
     action: function (rfid) {
@@ -152,7 +152,7 @@ Display = {
         $('#display').html(text);
     },
     flash: function () {
-        $('#display').effect('shake').effect('highlight', {color: '#fcc'})
+        $('#display').effect('shake').effect('highlight', {color: '#fcc'});
     }
 };
 
@@ -189,11 +189,11 @@ Receipt = {
         }
 
         this.updateTotalAmount();
-        this.updateReceipt();
+        this.updateReceipt(product);
 
         Display.set('OK');
     },
-    updateReceipt: function() {
+    updateReceipt: function(flash) {
         $('#receipt-table').empty();
         for (var i in this.receipt) {
             if (this.receipt[i]===undefined) continue;
@@ -205,7 +205,9 @@ Receipt = {
 
             var price = ((quantity * Settings.products[product].price) / 100).toFixed(2);
 
-            $('#receipt-table').append('<tr data-pid="' + i + '"><td width="70%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
+            var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
+
+            $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="70%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
         }
     },
     remove: function (index) {
@@ -421,7 +423,6 @@ $(function () {
     });
 
     $(document).keydown(function (event) {
-        console.log(event.which);
         if(event.which >= 48 && event.which <= 57) // 48 is the keycode for 0, 57 for 9
             Input.stroke((event.which - 48).toString());
     });
