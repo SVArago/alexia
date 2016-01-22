@@ -4,7 +4,8 @@ This project is released under the following license, except for the
 included libraries as mentioned in LIBRARIES.md and otherwise noted.
 
 ```
-Copyright (c) 2011-2015, I.C.T.S.V. Inter-Actief, S.V. Arago and individual contributors.
+Copyright (c) 2011-2016, I.C.T.S.V. Inter-Actief, S.V. Arago and individual
+contributors.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
