@@ -166,22 +166,29 @@ Receipt = {
                 'price': quantity * Settings.products[product].price
             });
 
-        this.updateTotalAmount();
-        this.updateReceipt(product);
-
+        this.updateShownReceipt(product);
         Display.set('OK');
     },
     remove: function (index) {
         this.receipt.splice(index, 1);
-        this.updateTotalAmount();
-        this.updateReceipt();
+        this.updateShownReceipt();
     },
     clear: function () {
-        $('#receipt-table').empty();
         this.receipt = [];
-        this.updateTotalAmount();
+        this.updateShownReceipt();
     },
-    updateReceipt: function(flash) {
+    getTotal: function () {
+        var sum = 0;
+        for (var i in this.receipt) {
+            if (this.receipt[i] === undefined)
+                continue;
+
+            sum += this.receipt[i].price;
+        }
+
+        return (sum / 100).toFixed(2);
+    },
+    updateShownReceipt: function(flashProduct) {
         $('#receipt-table').empty();
         for (var i in this.receipt) {
             if (this.receipt[i]===undefined)
@@ -189,40 +196,28 @@ Receipt = {
 
             var product = this.receipt[i].product;
             var quantity = this.receipt[i].amount;
-            var price = ((quantity * Settings.products[product].price) / 100).toFixed(2);
+            var price = (this.receipt[i].price / 100).toFixed(2);
             var desc = Settings.products[product].name;
             if (quantity !== 1)
                 desc += ' &times; ' + quantity;
 
-            var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
+            var doFlash = (flashProduct!==undefined && flashProduct==product)?' class="flash"':'';
             $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="75%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
         }
-    },
-    updateTotalAmount: function () {
-        // generate total
-        var sum = 0;
-        for (var i = 0; i < this.receipt.length; i++) {
-            if (this.receipt[i]) {
-                sum += this.receipt[i].amount * Settings.products[this.receipt[i].product].price;
-            }
-        }
-        var amount = (sum / 100).toFixed(2);
-        $('#receipt-total').find('input').val('' + amount);
-        return sum;
+
+        $('#receipt-total').find('input').val('€ ' + this.getTotal());
     },
     buildPaymentReceipt: function (user) {
         var receiptHTML = '';
-        var total = 0;
-
         for (var i = 0; i < Receipt.receipt.length; i++) {
             receiptHTML += '<tr>';
             receiptHTML += '<td>' + Settings.products[this.receipt[i].product].name + '</td>';
             receiptHTML += '<td>' + this.receipt[i].amount + ' &times;</td>';
             receiptHTML += '<td>&euro;' + (this.receipt[i].price / 100).toFixed(2) + '</td>';
             receiptHTML += '</tr>';
-            total += this.receipt[i].price;
         }
-        receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + (total / 100).toFixed(2) + '</strong></td></tr>';
+
+        receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + this.getTotal() + '</strong></td></tr>';
 
         $('#payment-receipt').html(receiptHTML);
         $('#payment-name').text(user.first_name);
@@ -300,7 +295,7 @@ Receipt = {
     },
     cash: function () {
         console.log('Paying cash');
-        var sum = Receipt.updateTotalAmount();
+        var sum = Receipt.getTotal();
         var amount = Math.ceil(sum / 10) * 10;
         State.toggleTo(State.MESSAGE, 'Dat wordt dan &euro; ' + (amount/100).toFixed(2));
     }
