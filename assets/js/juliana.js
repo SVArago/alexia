@@ -4,12 +4,6 @@
  * supporting Alexia
  */
 
-// src:http://phpjs.org/functions/date/
-_pad = function (n, c) {
-    n = n.toString();
-    return n.length < c ? _pad('0' + n, c, '0') : n;
-};
-
 State = {
     SALES: 0,
     PAYING: 1,
@@ -60,9 +54,6 @@ State = {
                 console.log('Error: switching to unknown state');
                 break;
         }
-        $('.btn').attr('draggable', false).on('dragstart', function () {
-            return false;
-        });
     },
 
     _hideAllScreens: function () {
@@ -145,51 +136,56 @@ Receipt = {
             return;
         }
 
-        //Try to update the quantity of an old receipt entry
+        // Try to update the quantity of an old receipt entry if possible, else
+        // add product to the receipt
         var foundProduct = false;
         for (var i in this.receipt) {
-            if (this.receipt[i].product==product) {
+            if (this.receipt[i].product == product) {
                 this.receipt[i].amount += quantity;
                 this.receipt[i].price += quantity * Settings.products[product].price;
                 foundProduct = true;
+                break;
             }
         }
-        if (!foundProduct) {
-            //add product to actual receipt
+
+        if (!foundProduct)
             this.receipt.push({
                 'product': product,
                 'amount': quantity,
                 'price': quantity * Settings.products[product].price
             });
-        }
 
         this.updateTotalAmount();
         this.updateReceipt(product);
 
         Display.set('OK');
     },
-    updateReceipt: function(flash) {
-        $('#receipt-table').empty();
-        for (var i in this.receipt) {
-            if (this.receipt[i]===undefined) continue;
-
-            var product = this.receipt[i].product;
-            var quantity = this.receipt[i].amount;
-            var desc = $('.tab-sale a[data-product="' + product + '"]').text();
-            if (quantity !== 1) desc += ' &times; ' + quantity;
-
-            var price = ((quantity * Settings.products[product].price) / 100).toFixed(2);
-
-            var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
-
-            $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="75%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
-        }
-    },
     remove: function (index) {
-        //remove product from actual receipt
         this.receipt.splice(index, 1);
         this.updateTotalAmount();
         this.updateReceipt();
+    },
+    clear: function () {
+        $('#receipt-table').empty();
+        this.receipt = [];
+        this.updateTotalAmount();
+    },
+    updateReceipt: function(flash) {
+        $('#receipt-table').empty();
+        for (var i in this.receipt) {
+            if (this.receipt[i]===undefined)
+                continue;
+
+            var product = this.receipt[i].product;
+            var quantity = this.receipt[i].amount;
+            var price = ((quantity * Settings.products[product].price) / 100).toFixed(2);
+            var desc = Settings.products[product].name;
+            if (quantity !== 1)
+                desc += ' &times; ' + quantity;
+
+            var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
+            $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="75%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
+        }
     },
     updateTotalAmount: function () {
         // generate total
@@ -203,22 +199,17 @@ Receipt = {
         $('#receipt-total').find('input').val('' + amount);
         return sum;
     },
-    clear: function () {
-        $('#receipt-table').empty();
-        this.receipt = [];
-        this.updateTotalAmount();
-    },
     buildPaymentReceipt: function (user) {
-        var receipt = Receipt.receipt;
         var receiptHTML = '';
         var total = 0;
-        for (var i = 0; i < receipt.length; i++) {
+
+        for (var i = 0; i < Receipt.receipt.length; i++) {
             receiptHTML += '<tr>';
-            receiptHTML += '<td>' + Settings.products[receipt[i].product].name + '</td>';
-            receiptHTML += '<td>' + receipt[i].amount + ' &times;</td>';
-            receiptHTML += '<td>&euro;' + (receipt[i].price / 100).toFixed(2) + '</td>';
+            receiptHTML += '<td>' + Settings.products[this.receipt[i].product].name + '</td>';
+            receiptHTML += '<td>' + this.receipt[i].amount + ' &times;</td>';
+            receiptHTML += '<td>&euro;' + (this.receipt[i].price / 100).toFixed(2) + '</td>';
             receiptHTML += '</tr>';
-            total += receipt[i].price;
+            total += this.receipt[i].price;
         }
         receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + (total / 100).toFixed(2) + '</strong></td></tr>';
 
@@ -281,10 +272,7 @@ Receipt = {
         };
 
         clearInterval(Receipt.counterInterval);
-        Receipt.confirmPay(rpcRequest);
 
-    },
-    confirmPay: function (rpcRequest) {
         IAjax.request(rpcRequest, function (result) {
             if (result.error) {
                 State.toggleTo(State.ERROR, 'Error with payment: ' + result.error);
@@ -389,6 +377,10 @@ IAjax = {
 $(function () {
     Scanner.init();
     State.toggleTo(State.SALES);
+
+    $('.btn').attr('draggable', false).on('dragstart', function () {
+        return false;
+    });
 
     $('.btn-keypad').click(function () {
         Input.stroke($(this).html());
