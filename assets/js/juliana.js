@@ -12,7 +12,10 @@ State = {
     MESSAGE: 4,
 
     current: this.SALES,
+    isLoading: false,
+
     toggleTo: function (newState, argument) {
+        this.clearLoading();
         switch (newState) {
             case this.SALES:
                 console.log('Changing to SALES...');
@@ -56,6 +59,13 @@ State = {
         }
     },
 
+    setLoading: function () {
+        this.isLoading = true;
+    },
+    clearLoading: function () {
+        this.isLoading = false;
+    },
+
     _hideAllScreens: function () {
         $('#rfid-screen').hide();
         $('#cashier-screen').hide();
@@ -93,7 +103,9 @@ Scanner = {
         };
     },
     action: function (rfid) {
-        console.log('CurrentState: ' + State.current);
+        if (State.isLoading)
+            return;
+
         if (State.current === State.SALES) {
             if (Receipt.receipt.length > 0) {
                 Receipt.pay(rfid);
@@ -218,6 +230,7 @@ Receipt = {
     },
     pay: function (rfid) {
         console.log('Card scanned, retrieving data');
+        State.setLoading();
         User.retrieveData(rfid, function (result) {
             Receipt.continuePay(result, rfid);
         });
@@ -263,6 +276,10 @@ Receipt = {
         }, 1000);
     },
     payNow: function () {
+        if (State.isLoading)
+            return;
+        State.setLoading();
+
         console.log('Processing payment now.');
         var rpcRequest = {
             jsonrpc: '2.0',
@@ -330,6 +347,7 @@ User = {
     },
     check: function (rfid) {
         console.log('Card scanned. Retrieving userData for: ' + rfid);
+        State.setLoading();
         User.retrieveData(rfid, function (data) {
             Display.set('?');
             User.continueCheck(data.result.user);
