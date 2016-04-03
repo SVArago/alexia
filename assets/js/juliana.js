@@ -23,7 +23,6 @@ State = {
                 this._hideAllScreens();
 
                 clearInterval(Receipt.counterInterval);
-                Receipt.clear();
                 $('#cashier-screen').show();
                 break;
             case this.CHECK:
@@ -294,6 +293,7 @@ Receipt = {
             if (result.error) {
                 State.toggleTo(State.ERROR, 'Error with payment: ' + result.error);
             } else {
+                Receipt.clear();
                 State.toggleTo(State.SALES);
             }
         });
@@ -418,10 +418,12 @@ $(function () {
                 var count = !Input.read() ? 1 : Input.read();
                 Receipt.add($(this).data('product'), count);
                 break;
-            case 'cancel':
+            case 'cancelPayment':
+                Receipt.clear();
+                // Fall-through on purpose here
+            case 'cancelError':
                 Display.set('?');
                 State.toggleTo(State.SALES);
-                Receipt.clear();
                 break;
             case 'check':
                 State.toggleTo(State.CHECK);
@@ -429,9 +431,6 @@ $(function () {
                 break;
             case 'cash':
                 Receipt.cash();
-                break;
-            case 'cancelPayment':
-                State.toggleTo(State.SALES);
                 break;
             case 'payNow':
                 Receipt.payNow();
