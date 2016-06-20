@@ -47,6 +47,6 @@ def juliana(request, pk):
     countdown = settings.JULIANA_COUNTDOWN
 
     # Detect if connection is made via the Juliana Android app
-    androidapp = request.META.get('HTTP_X_REQUESTED_WITH') == 'net.inter_actief.juliananfc'
+    websocketssl = not (request.META.get('HTTP_X_REQUESTED_WITH') == 'net.inter_actief.juliananfc')
 
     return render(request, 'juliana/index.html', locals())
