@@ -112,12 +112,13 @@ Scanner = {
         var scanner = this;
         var socket;
 
-        if (Settings.androidapp) {
-            // Juliana app on Android will not connect if a protocol is specified
-            socket = new WebSocket('ws://localhost:3000');
+        // Don't specify a protocol name, as both the Juliana app on Android and Arago Card Reader
+        // don't accept them.
+        if (Settings.websocketssl) {
+            // Use localhost.arago.utwente.nl as we can get a certificate for it
+            socket = new WebSocket('wss://localhost.arago.utwente.nl:3000');
         } else {
-            // JulianaNFC_C application on Windows will not connect without nfc protocol
-            socket = new WebSocket('ws://localhost:3000', 'nfc');
+            socket = new WebSocket('ws://localhost:3000');
         }
 
         socket.onmessage = function (event) {
