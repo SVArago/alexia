@@ -139,10 +139,15 @@ def event_show(request, pk):
         for t in tenders:
             ba = bas[t.user]
             a = ba[0].availability if ba else None
+            t_info = {'user': t.user,
+                      'availability': a,
+                      'membership_id': t.pk,
+                      'last_tended': t.tended()[0] if len(t.tended()) > 0 else None
+                      }
             if t.is_active:
-                active_availabilities.append(dict({'user': t.user, 'availability': a}))
+                active_availabilities.append(t_info)
             else:
-                inactive_availabilities.append(dict({'user': t.user, 'availability': a}))
+                inactive_availabilities.append(t_info)
 
     return render(request, 'scheduling/event_show.html', locals())
 

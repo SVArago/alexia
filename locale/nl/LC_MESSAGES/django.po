@@ -6,8 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-06 13:53+0200\n"
-"PO-Revision-Date: 2015-09-21 21:14+0200\n"
+"POT-Creation-Date: 2016-08-08 21:00+0200\n"
+"PO-Revision-Date: 2016-08-08 20:51+0200\n"
+"Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -413,67 +414,67 @@ msgstr "Een primaire organisatie is nodig voor het aanmaken van evenementen."
 
 #, python-format
 msgid "Event consumption #%s"
-msgstr ""
+msgstr "Activiteitsconsumptie #%s"
 
 msgid "opened at"
-msgstr ""
+msgstr "geopend op"
 
 msgid "closed at"
-msgstr ""
+msgstr "gesloten op"
 
 msgid "event consumption"
-msgstr ""
+msgstr "activiteitsconsumptie"
 
 msgid "event consumptions"
-msgstr ""
+msgstr "activiteitconsumpties"
 
 msgid "ideal amount"
-msgstr ""
+msgstr "ideale hoeveelheid"
 
 msgid "stock products"
-msgstr ""
+msgstr "voorraadproducten"
 
 msgid "consumption group"
-msgstr ""
+msgstr "consumptiegroep"
 
 msgid "used at"
-msgstr ""
+msgstr "gebruikt op"
 
 msgid "tap"
-msgstr ""
+msgstr "tap"
 
 msgid "start weight"
-msgstr ""
+msgstr "begingewicht"
 
 msgid "end weight"
-msgstr ""
+msgstr "eindgewicht"
 
 msgid "consumption"
-msgstr ""
+msgstr "consumptie"
 
 msgid "consumptions"
-msgstr ""
+msgstr "consumpties"
 
 msgid "date"
-msgstr ""
+msgstr "datum"
 
 msgid "is completed"
-msgstr ""
+msgstr "is voltooid"
 
 msgid "products"
-msgstr ""
+msgstr "producten"
 
 msgid "stock count"
-msgstr ""
+msgstr "voorraadtelling"
 
 msgid "stock counts"
-msgstr ""
+msgstr "voorraadtellingen"
 
 msgid "stock product amount"
-msgstr ""
+msgstr "voorraadproducthoeveelheid"
 
 msgid "stock product amounts"
-msgstr ""
+msgstr "voorraadproducthoeveelheden"
 
 msgid "Access denied"
 msgstr "Geen toegang"
@@ -1092,7 +1093,7 @@ msgid "End"
 msgstr "Einde"
 
 msgid "There are no tender comments."
-msgstr "Er is geen specifieke tappersinstructie."
+msgstr "Er is geen tappersinstructie."
 
 msgid "Temporary products"
 msgstr "Tijdelijke producten"
@@ -1148,6 +1149,108 @@ msgstr "Er zijn geen activiteiten gepland van %(s)s tot %(e)s."
 msgid "No events have been planned after %(s)s."
 msgstr "Er zijn geen activiteiten gepland na %(s)s."
 
+msgid "today"
+msgstr "vandaag"
+
+msgid "month"
+msgstr "maand"
+
+msgid "week"
+msgstr "week"
+
+msgid "January"
+msgstr "januari"
+
+msgid "February"
+msgstr "februari"
+
+msgid "March"
+msgstr "maart"
+
+msgid "April"
+msgstr "april"
+
+msgid "May"
+msgstr "mei"
+
+msgid "June"
+msgstr "juni"
+
+msgid "July"
+msgstr "juli"
+
+msgid "August"
+msgstr "augustus"
+
+msgid "September"
+msgstr "september"
+
+msgid "October"
+msgstr "oktober"
+
+msgid "November"
+msgstr "november"
+
+msgid "December"
+msgstr "december"
+
+msgid "Jan."
+msgstr "jan"
+
+msgid "Feb."
+msgstr "feb"
+
+msgid "Mar."
+msgstr "maa"
+
+msgid "Apr."
+msgstr "apr"
+
+msgid "Jun."
+msgstr "jun"
+
+msgid "Jul."
+msgstr "jul"
+
+msgid "Aug."
+msgstr "aug"
+
+msgid "Sep."
+msgstr "sep"
+
+msgid "Oct."
+msgstr "oct"
+
+msgid "Nov."
+msgstr "nov"
+
+msgid "Dec."
+msgstr "dec"
+
+msgid "Sun"
+msgstr "zo"
+
+msgid "Mon"
+msgstr "ma"
+
+msgid "Tue"
+msgstr "di"
+
+msgid "Wed"
+msgstr "wo"
+
+msgid "Thu"
+msgstr "do"
+
+msgid "Fri"
+msgstr "vr"
+
+msgid "Sat"
+msgstr "za"
+
+msgid "Week"
+msgstr "Week"
+
 msgid "Loading..."
 msgstr "Laden..."
 
@@ -1180,3 +1283,4 @@ msgstr "Je bent geen stichtingsmananger."
 
 msgid "Javascript must be enabled to reveal email address"
 msgstr "Javascript moet zijn ingeschakeld om dit e-mailadres te bekijken."
+
