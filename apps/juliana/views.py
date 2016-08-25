@@ -46,13 +46,14 @@ def juliana(request, pk):
         })
 
     # people for on-screen checkout
-    onscreen_checkout = User.objects.filter(
+    onscreen_users = User.objects.filter(
+        Q(authorizations__organization=event.organizer),
+        Q(authorizations__start_date__lte=timezone.now()),
         Q(authorizations__end_date__isnull=True) | Q(authorizations__end_date__gte=timezone.now()),
-        authorizations__organization=event.organizer,
-        authorizations__start_date__lte=timezone.now(),
-        membership__organization=event.organizer,
-        membership__is_active=True,
-    ).order_by('first_name')
+        (Q(membership__organization=event.organizer) & Q(membership__is_active=True)) | Q(profile__is_external_entity=True),
+    ).order_by('-profile__is_external_entity', 'first_name')
+    split_index = next((index for index, user in enumerate(onscreen_users) if not user.profile.is_external_entity), 0)
+    onscreen_checkout = [onscreen_users[0:split_index], onscreen_users[split_index:]]
 
     # settings
     debug = settings.DEBUG

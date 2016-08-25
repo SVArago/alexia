@@ -109,13 +109,20 @@
                 </div>
             </div>
             <div class="col-xs-2 onscreen-checkout-container">
-                <div class="row">
-                    {% for user in onscreen_checkout %}
-                        <div class="btn-container">
-                            <a href="#" class="btn btn-default btn-block command" data-command="payUser" data-user="{{ user.id }}">{{ user.first_name }}</a>
+                {% for group in onscreen_checkout %}
+                    {% if group %}
+                        <div class="row">
+                            {% for user in group %}
+                                <div class="btn-container">
+                                    <a href="#" class="btn btn-default btn-block command" data-command="payUser" data-user="{{ user.id }}">{{ user.first_name }}</a>
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
+                        {% if not forloop.last %}
+                            <hr />
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
     </div>
