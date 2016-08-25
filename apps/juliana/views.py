@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from apps.scheduling.models import Event
@@ -41,6 +44,15 @@ def juliana(request, pk):
             'background_color': product.background_color,
             'price': int(product.price * 100),
         })
+
+    # people for on-screen checkout
+    onscreen_checkout = User.objects.filter(
+        Q(authorizations__end_date__isnull=True) | Q(authorizations__end_date__gte=timezone.now()),
+        authorizations__organization=event.organizer,
+        authorizations__start_date__lte=timezone.now(),
+        membership__organization=event.organizer,
+        membership__is_active=True,
+    ).order_by('first_name')
 
     # settings
     debug = settings.DEBUG

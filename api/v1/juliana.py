@@ -97,15 +97,20 @@ def juliana_order_save(request, event_id, user_id, purchases, rfid_data):
     """Saves a new order in the database"""
     event = _get_validate_event(request, event_id)
 
-    rfid_identifier = rfid_to_identifier(rfid=rfid_data)
-
     try:
         user = User.objects.get(pk=user_id)
-        rfidcard = RfidCard.objects.get(identifier=rfid_identifier, is_active=True)
     except User.DoesNotExist:
         raise InvalidParamsError('User does not exist')
-    except RfidCard.DoesNotExist:
-        raise InvalidParamsError('RFID card not found')
+
+    if rfid_data is not None:
+        rfid_identifier = rfid_to_identifier(rfid=rfid_data)
+
+        try:
+            rfidcard = RfidCard.objects.get(identifier=rfid_identifier, is_active=True)
+        except RfidCard.DoesNotExist:
+            raise InvalidParamsError('RFID card not found')
+    else:
+        rfidcard = None
 
     cur_user = request.user
 

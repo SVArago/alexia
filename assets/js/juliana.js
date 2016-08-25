@@ -254,25 +254,37 @@ Receipt = {
         } else if (userData.error) {
             State.toggleTo(State.ERROR, 'Error authenticating: ' + userData.error.message);
         } else {
-            console.log('Userdata received correctly. Proceeding to countdown.');
-
-            Receipt.payData = {
-                event_id: Settings.event_id,
-                user_id: userData.result.user.id,
-                purchases: Receipt.receipt,
-                rfid_data: rfid
-            };
-
-            var countdown = Settings.countdown - 1;
-            $('#payment-countdown').text(countdown + 1);
-            Receipt.counterInterval = setInterval(function () {
-                $('#payment-countdown').text(countdown);
-                if (countdown === 0) {
-                    Receipt.payNow();
-                }
-                countdown--;
-            }, 1000);
+            console.log('Userdata received correctly.');
+            Receipt.payForUser(userData.result.user.id, rfid);
         }
+    },
+    payForUser: function (userId, rfid) {
+        if (Receipt.receipt.length == 0) {
+            console.log('Info: receipt empty');
+            Display.set('Please select products!');
+            return;
+        }
+
+        console.log('Starting pay countdown');
+        if (State.current != State.PAYING)
+            State.toggleTo(State.PAYING);
+
+        Receipt.payData = {
+            event_id: Settings.event_id,
+            user_id: userId,
+            purchases: Receipt.receipt,
+            rfid_data: rfid
+        };
+
+        var countdown = Settings.countdown - 1;
+        $('#payment-countdown').text(countdown + 1);
+        Receipt.counterInterval = setInterval(function () {
+            $('#payment-countdown').text(countdown);
+            if (countdown === 0) {
+                Receipt.payNow();
+            }
+            countdown--;
+        }, 1000);
     },
     payNow: function () {
         console.log('Processing payment now.');
@@ -454,6 +466,9 @@ $(function () {
                 break;
             case 'payNow':
                 Receipt.payNow();
+                break;
+            case 'payUser':
+                Receipt.payForUser($(this).data('user'), null);
                 break;
             case 'ok':
                 State.toggleTo(State.SALES);
