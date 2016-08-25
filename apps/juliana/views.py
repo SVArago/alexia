@@ -46,7 +46,19 @@ def juliana(request, pk):
     debug = settings.DEBUG
     countdown = settings.JULIANA_COUNTDOWN
 
-    # Detect if connection is made via the Juliana Android app
-    websocketssl = not (request.META.get('HTTP_X_REQUESTED_WITH') == 'net.inter_actief.juliananfc')
+    # use default websocket URL and protocol
+    websocket_url = settings.JULIANA_WEBSOCKET_URL
+    websocket_protocol = settings.JULIANA_WEBSOCKET_PROTOCOL
+
+    # use special URL when the Android app is in use
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'net.inter_actief.juliananfc':
+        websocket_url = 'ws://localhost:3000'
+        websocket_protocol = None
+
+    # allow user to override the values in the request
+    if 'websocket_url' in request.GET:
+        websocket_url = request.GET.get('websocket_url')
+    if 'websocket_protocol' in request.GET:
+        websocket_protocol = request.GET.get('websocket_protocol') if len(request.GET.get('websocket_protocol')) > 0 else None
 
     return render(request, 'juliana/index.html', locals())

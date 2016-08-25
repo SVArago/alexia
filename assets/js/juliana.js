@@ -112,13 +112,10 @@ Scanner = {
         var scanner = this;
         var socket;
 
-        // Don't specify a protocol name, as both the Juliana app on Android and Arago Card Reader
-        // don't accept them.
-        if (Settings.websocketssl) {
-            // Use localhost.arago.utwente.nl as we can get a certificate for it
-            socket = new WebSocket('wss://localhost.arago.utwente.nl:3000');
+        if (Settings.websocket_protocol != null) {
+            socket = new WebSocket(Settings.websocket_url, Settings.websocket_protocol);
         } else {
-            socket = new WebSocket('ws://localhost:3000');
+            socket = new WebSocket(Settings.websocket_url);
         }
 
         socket.onmessage = function (event) {
