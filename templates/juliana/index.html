@@ -22,7 +22,8 @@
                     },
                 {% endfor %}
             },
-            websocketssl: {{ websocketssl|yesno:"true,false" }},
+            websocket_url: "{{ websocket_url }}",
+            websocket_protocol: {% if websocket_protocol %}"{{ websocket_protocol }}"{% else %}null{% endif %},
             countdown: {{ countdown }}
         };
     </script>

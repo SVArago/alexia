@@ -162,5 +162,7 @@ RADIUS_SECRET = ''
 RADIUS_IDENTIFIER = ''
 RADIUS_DICT = os.path.join(ROOT_DIR, 'utils/auth/radius.dict')
 
-# Countdown in Juliana
+# Juliana configuration
 JULIANA_COUNTDOWN = 5
+JULIANA_WEBSOCKET_URL = 'ws://localhost:3000'
+JULIANA_WEBSOCKET_PROTOCOL = 'nfc'
