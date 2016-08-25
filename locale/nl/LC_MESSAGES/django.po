@@ -1283,4 +1283,3 @@ msgstr "Je bent geen stichtingsmananger."
 
 msgid "Javascript must be enabled to reveal email address"
 msgstr "Javascript moet zijn ingeschakeld om dit e-mailadres te bekijken."
-
