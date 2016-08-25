@@ -217,6 +217,7 @@ class Membership(models.Model):
     is_tender = models.BooleanField(_('may tend on events'), default=False)
     is_planner = models.BooleanField(_('may create and modify events'), default=False)
     is_manager = models.BooleanField(_('may create and modify users'), default=False)
+    is_treasurer = models.BooleanField(_('may see and manage finances'), default=False)
     is_active = models.BooleanField(_('is currently active'), default=True)
 
     class Meta:
