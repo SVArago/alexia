@@ -7,13 +7,6 @@ body {
   padding-top: 20px !important;
 }
 
-/* Increase container width */
-@media (min-width: 1708px) {
-    .container {
-        width: 1670px;
-    }
-}
-
 .tab-sale > div.well {
 	height:860px;
 	margin-bottom:0;
@@ -32,17 +25,19 @@ body {
 
 .tab-sale .btn {
 	margin-bottom:10px;
-	height:100px;
+	height:90px;
 	white-space:normal;
-	line-height:90px;
-	padding:0;
-    font-size:20px;
+	line-height:80px;
+	padding:4px;
+	font-size:20px;
 }
 
 .tab-sale .btn > span {
 	display:inline-block;
 	vertical-align:middle;
 	line-height:normal;
+	width: 100%;
+	overflow: hidden;
 }
 
 #keypad .row {
@@ -160,25 +155,24 @@ body {
     padding-right: 10px;
 }
 
+.onscreen-checkout-container hr {
+	margin-top: 3px;
+	margin-bottom: 10px;
+}
+
 .onscreen-checkout-container .btn-container {
     padding-left: 5px;
     padding-right: 5px;
-    width: 100%;
+    width: 50%;
     float: left;
 }
-
-@media (min-width: 1708px) {
-    .onscreen-checkout-container .btn-container {
-        width: 50%;
-    }
-}
-
 
 .onscreen-checkout-container .btn {
     line-height: 1.3em;
     font-size: 1.35em;
     padding: 10px 1px 12px;
     margin-bottom: 7px;
+    overflow-x: hidden;
 }
 
 /*Payment/RFID screen*/

@@ -207,7 +207,7 @@ Receipt = {
 
             var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
 
-            $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="70%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
+            $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="75%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
         }
     },
     remove: function (index) {
