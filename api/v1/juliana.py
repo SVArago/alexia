@@ -93,11 +93,11 @@ def juliana_order_save(request, event_id, user_id, purchases, rfid_data):
 
     if rfid_data is not None:
         rfidcard = _retrieve_rfidcard(rfid_data)
+        if rfidcard.user != user:
+            raise InvalidParamsError('RFID card and user id do not match')
     else:
         rfidcard = None
 
-    if rfidcard.user != user:
-        raise InvalidParamsError('RFID card and user id do not match')
     authorization = Authorization.get_for_user_event(user, event)
     if not authorization:
         raise InvalidParamsError('No authorization available')
