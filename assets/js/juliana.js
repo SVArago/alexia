@@ -118,6 +118,15 @@ Scanner = {
             socket = new WebSocket(Settings.websocket_url);
         }
 
+        socket.onopen = function (event) {
+            console.log('Connected with websocket!');
+        };
+
+        socket.onerror = function (event) {
+            console.log('Failed to connect with websocket, warning user.');
+            alert('Verbinden met NFC-reader mislukt.');
+        };
+
         socket.onmessage = function (event) {
             var rfid = JSON.parse(event.data);
             scanner.action(rfid);
