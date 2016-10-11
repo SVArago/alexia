@@ -4,9 +4,9 @@ from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 from jsonrpc import jsonrpc_method
 
-from .common import api_v1_site, format_event_extended
 from apps.organization.models import Location, Organization
 from apps.scheduling.models import Event, StandardReservation
+from .common import api_v1_site, format_event_extended
 
 
 @jsonrpc_method('event.list(String, String, String, String, Boolean, Array) -> Array', site=api_v1_site, safe=True, authenticated=True)
