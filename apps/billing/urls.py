@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^productgroup/create/$', views.ProductGroupCreateView.as_view(), name='productgroup_create'),
     url(r'^productgroup/(?P<pk>\d+)/$', views.ProductGroupDetailView.as_view(), name='productgroup_detail'),
     url(r'^productgroup/(?P<pk>\d+)/update/$', views.ProductGroupUpdateView.as_view(), name='productgroup_update'),
+    url(r'^productgroup/(?P<pk>\d+)/delete/$', views.ProductGroupDeleteView.as_view(), name='productgroup_delete'),
 
     url(r'^product/(?P<pk>\d+)/$', views.ProductRedirectView.as_view(), name='product_detail'),
     url(r'^product/permanent/$', views.PermanentProductListView.as_view(), name='permanentproduct_list'),
