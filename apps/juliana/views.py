@@ -47,6 +47,7 @@ def juliana(request, pk):
 
     # people for on-screen checkout
     onscreen_users = User.objects.filter(
+        Q(is_active=True),
         Q(authorizations__organization=event.organizer),
         Q(authorizations__start_date__lte=timezone.now()),
         Q(authorizations__end_date__isnull=True) | Q(authorizations__end_date__gte=timezone.now()),
