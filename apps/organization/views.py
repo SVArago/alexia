@@ -6,25 +6,25 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from utils import log
-from utils.auth.decorators import manager_required
 from utils.auth.backends import RADIUS_BACKEND_NAME
-from .forms import MembershipAddForm, MembershipEditForm, CreateUserForm, UploadIvaForm
-from .models import Membership, Profile, AuthenticationData
+from utils.auth.decorators import manager_required
+
+from .forms import CreateUserForm, MembershipAddForm, MembershipEditForm, UploadIvaForm
+from .models import AuthenticationData, Membership, Profile
 
 
 @login_required
 @manager_required
 def membership_list(request):
-    memberships = request.organization.membership_set.select_related(
-        'user').order_by('user__first_name')
+    memberships = request.organization.membership_set.select_related('user').order_by('user__first_name')
     return render(request, 'membership/list.html', locals())
 
 
 @login_required
 @manager_required
 def iva_list(request):
-    memberships = request.organization.membership_set.filter(is_tender=True) \
-        .select_related('user').order_by('user__first_name')
+    memberships = request.organization.membership_set \
+        .filter(is_tender=True).select_related('user').order_by('user__first_name')
     return render(request, 'membership/iva_list.html', locals())
 
 
@@ -36,15 +36,13 @@ def membership_add(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             try:
-                authentication_data = AuthenticationData.objects.get(
-                    username=username, backend=RADIUS_BACKEND_NAME)
+                authentication_data = AuthenticationData.objects.get(username=username, backend=RADIUS_BACKEND_NAME)
             except AuthenticationData.DoesNotExist:
                 return redirect(membership_create_user, username=username)
 
             user = authentication_data.user
-            membership, membership_created = Membership.objects.get_or_create(
-                user=user, organization=request.organization)
-            if membership_created:
+            membership, is_new = Membership.objects.get_or_create(user=user, organization=request.organization)
+            if is_new:
                 log.membership_created(request.user, membership)
             return redirect(membership_edit, pk=membership.pk)
     else:
@@ -77,9 +75,8 @@ def membership_create_user(request, username):
             profile = Profile(user=user)
             profile.save()
 
-            membership, membership_created = Membership.objects.get_or_create(
-                user=user, organization=request.organization)
-            if membership_created:
+            membership, is_new = Membership.objects.get_or_create(user=user, organization=request.organization)
+            if is_new:
                 log.membership_created(request.user, membership)
             return redirect(membership_edit, pk=membership.pk)
     else:
@@ -173,7 +170,7 @@ def membership_iva(request, pk):
     if membership.organization != request.organization:
         raise PermissionDenied
 
-    iva_file = membership.user.profile.certificate.file
+    iva_file = membership.user.certificate.file
     content_type, encoding = mimetypes.guess_type(iva_file.url)
     content_type = content_type or 'application/octet-stream'
     return HttpResponse(iva_file, content_type=content_type)
@@ -186,17 +183,15 @@ def iva_upload(request, pk):
     if membership.organization != request.organization:
         raise PermissionDenied
 
-    certificate = membership.user.profile.certificate
+    certificate = getattr(membership.user, 'certificate', None)
     if request.method == 'POST':
         form = UploadIvaForm(request.POST, request.FILES, instance=certificate)
         if form.is_valid():
             if certificate:
                 certificate.delete()
             certificate = form.save(commit=False)
-            certificate._id = str(membership.user.pk)
+            certificate.owner_id = membership.user.pk
             certificate.save()
-            membership.user.profile.certificate = certificate
-            membership.user.profile.save()
             return redirect(membership_list)
     else:
         form = UploadIvaForm(instance=certificate)
@@ -208,7 +203,7 @@ def iva_upload(request, pk):
 @manager_required
 def iva_approve(request, pk):
     membership = get_object_or_404(Membership, pk=pk)
-    certificate = membership.user.profile.certificate
+    certificate = membership.user.certificate
 
     if membership.organization != request.organization:
         raise PermissionDenied
@@ -222,7 +217,7 @@ def iva_approve(request, pk):
 @manager_required
 def iva_decline(request, pk):
     membership = get_object_or_404(Membership, pk=pk)
-    certificate = membership.user.profile.certificate
+    certificate = membership.user.certificate
 
     if membership.organization != request.organization:
         raise PermissionDenied

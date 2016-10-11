@@ -2,25 +2,15 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from apps.scheduling.models import Event
 from utils.auth.decorators import tender_required
 
 
-@login_required
-@tender_required
-def juliana(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-
-    # Permission checks
-    if not request.user.is_superuser and not event.is_tender(request.user):
-        return render(request, "403.html", {'reason': _('You are not a tender for this event')}, status=403)
-    if not request.user.is_superuser and not event.can_be_opened():
-        return render(request, "403.html", {'reason': _('This event is not open')}, status=403)
-
+def _get_product_list(event):
     products = []
 
     for sellingprice in event.pricegroup.sellingprice_set.all():
@@ -34,7 +24,7 @@ def juliana(request, pk):
                 'position': product.position,
             })
 
-    products.sort(cmp=lambda x, y: cmp(x['position'], y['position']))
+    products.sort(key=lambda x: x['position'])
 
     for product in event.temporaryproducts.all():
         products.append({
@@ -45,6 +35,10 @@ def juliana(request, pk):
             'price': int(product.price * 100),
         })
 
+    return products
+
+
+def _get_onscreen_users(event):
     # people for on-screen checkout
     onscreen_users = User.objects.filter(
         Q(authorizations__organization=event.organizer),
@@ -53,11 +47,26 @@ def juliana(request, pk):
         (Q(membership__organization=event.organizer) & Q(membership__is_active=True)) | Q(profile__is_external_entity=True),
     ).order_by('-profile__is_external_entity', 'first_name')
     split_index = next((index for index, user in enumerate(onscreen_users) if not user.profile.is_external_entity), 0)
-    onscreen_checkout = [onscreen_users[0:split_index], onscreen_users[split_index:]]
+    return [onscreen_users[0:split_index], onscreen_users[split_index:]]
+
+
+@login_required
+@tender_required
+def juliana(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+
+    if not event.is_tender(request.user):
+        return render(request, '403.html', {'reason': _('You are not a tender for this event')}, status=403)
+    if not event.can_be_opened(request.user):
+        return render(request, '403.html', {'reason': _('This event is not open')}, status=403)
+
+    # data
+    products = _get_product_list(event)
+    onscreen_checkout = _get_onscreen_users(event)
 
     # settings
     debug = settings.DEBUG
-    countdown = settings.JULIANA_COUNTDOWN
+    countdown = settings.JULIANA_COUNTDOWN if hasattr(settings, 'JULIANA_COUNTDOWN') else 5
 
     # use default websocket URL and protocol
     websocket_url = settings.JULIANA_WEBSOCKET_URL

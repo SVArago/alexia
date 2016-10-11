@@ -6,8 +6,14 @@
 {% block content %}
 <div class="page-header clearfix">
     <h1 class="pull-left">
-         {% blocktrans with organization=request.organization %}Transactions of {{ organization }}{% endblocktrans %}
+        {% blocktrans with organization=request.organization %}Transactions of {{ organization }}{% endblocktrans %}
     </h1>
+    <div class="text-right">
+        <a href="{% url 'export-orders' %}" class="btn btn-default pull-right">
+            <span class="glyphicon glyphicon-print"></span>
+            {% trans 'Export' %}
+        </a>
+    </div>
 </div>
 <div class="panel-group" id="stats">
     <div class="panel panel-default">
@@ -25,7 +31,7 @@
                 <tbody>
                 {% for year in stats_years %}
                     <tr>
-                        <td><a href="{% url 'apps.billing.views.stats_year' year.year %}">{{ year.year }}</a></td>
+                        <td><a href="{% url 'year-orders' year.year %}">{{ year.year }}</a></td>
                         <td>&euro; {{ year.revenue|floatformat:2|default:"&mdash;" }}</td>
                     </tr>
                 {% endfor %}
@@ -49,7 +55,7 @@
         {% for e in events %}
             <tr>
                 <td>{{ e.starts_at|date:"l d F" }}</td>
-                <td><a href="{% url 'apps.billing.views.order_show' e.pk %}">{{ e.name }}</a></td>
+                <td><a href="{% url 'event-orders' e.pk %}">{{ e.name }}</a></td>
                 <td>{{ e.order_count }}</td>
                 <td>&euro; {{ e.revenue|floatformat:2 }}</td>
                 <td>{{ e.pricegroup }}</td>
