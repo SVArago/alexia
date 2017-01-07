@@ -12,6 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RemoveField(
+            model_name='permanentproduct',
+            name='stockproduct',
+        ),
         migrations.AlterField(
             model_name='order',
             name='synchronized',
