@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
-from django.db import connection
 from django.db.models import Count, Sum
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import RedirectView, TemplateView
@@ -44,8 +44,7 @@ def order_list(request):
     except EmptyPage:
         events = paginator.page(paginator.num_pages)
 
-    year_sql = connection.ops.date_extract_sql('year', 'starts_at')
-    stats_years = Event.objects.extra({'year': year_sql}) \
+    stats_years = Event.objects.annotate(year=ExtractYear('starts_at')) \
                        .filter(organizer=request.organization).values('year') \
                        .annotate(revenue=Sum('orders__amount')).order_by('-year')[:3]
 
@@ -107,7 +106,7 @@ def order_export(request):
                 .filter(order_count__gt=0, ) \
                 .order_by('starts_at')
             summary = event_list \
-                .extra({'month': 'MONTH(starts_at)'}) \
+                .annotate(month=ExtractMonth('starts_at')) \
                 .values('month') \
                 .annotate(revenue=Sum('orders__amount')) \
                 .order_by('month')
