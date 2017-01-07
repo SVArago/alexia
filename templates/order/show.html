@@ -23,6 +23,10 @@
                 <th>{% trans 'Organizer' %}</th>
                 <td>{{ event.organizer }}</td>
             </tr>
+            <tr>
+                <th>{% trans 'Tenders' %}</th>
+                <th>{% include 'scheduling/partials/assigned_bartenders.html' with e=event %}</th>
+            </tr>
         </table>
     </div>
     <div class="col-xs-12 col-sm-6">
@@ -110,6 +114,7 @@
                         <th>{% trans 'ID' %}</th>
                         <th>{% trans 'Debtor' %}</th>
                         <th>{% trans 'Amount' %}</th>
+                        <th>{% trans 'Order' %}</th>
                         <th>{% trans 'Timestamp' %}</th>
                         <th>{% trans 'Synchronized' %}</th>
                     </tr>
@@ -120,6 +125,11 @@
                         <td><a href="{% url 'apps.billing.views.payment_show' o.pk %}">{{ o.pk }}</a></td>
                         <td>{{ o.authorization.user.get_full_name }}</td>
                         <td>&euro; {{ o.amount|floatformat:2 }}</td>
+                        <td>
+                            {% for p in o.purchases.all %}
+                                {{ p.amount }} &times; {{ p.product }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
                         <td>{{ o.placed_at }}</td>
                         <td>{% if o.synchronized %}<i class="icon-alexia-ok"></li>{% else %}<i class="icon-alexia-notok">{% endif %}</td>
                     </tr>
