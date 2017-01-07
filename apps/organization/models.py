@@ -74,6 +74,7 @@ class Profile(models.Model):
         null=True,
         verbose_name=_('current organization'),
     )
+    current_language = models.CharField(_('current language'), max_length=5, null=True)
     ical_id = models.CharField(_('iCal identifier'), max_length=36, null=True)
 
     class Meta:

@@ -30,13 +30,11 @@ urlpatterns = [
     url(r'^register/$', general_views.register, name='register'),
     url(r'^change_current_organization/(?P<organization>[-\w]+)/$',
         general_views.change_current_organization, name='change-current-organization'),
+    url(r'^change_current_language/$', general_views.change_current_language, name='change-current-language'),
 
     # Django Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
-
-    # Internationalization
-    url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # Robots
     url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),

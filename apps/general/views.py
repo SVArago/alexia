@@ -6,9 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
+from django.utils import translation
 from django.utils.http import is_safe_url
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.i18n import set_language as set_language_view
 
 from apps.organization.models import Location, Membership, Organization
 from apps.scheduling.models import Availability, BartenderAvailability, Event
@@ -45,6 +47,11 @@ def login(request):
             # Primaire organisatie instellen
             if hasattr(user, 'profile') and user.profile.current_organization:
                 request.session['organization_pk'] = user.profile.current_organization.pk
+
+            # Taal instellen
+            if hasattr(user, 'profile') and user.profile.current_language:
+                translation.activate(user.profile.current_language)
+                request.session[translation.LANGUAGE_SESSION_KEY] = user.profile.current_language
 
             if not user.first_name or not user.email:
                 # User information is not complete, redirect to register page.
@@ -84,6 +91,14 @@ def change_current_organization(request, organization):
     request.user.profile.current_organization = org
     request.user.profile.save()
     return redirect(request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, '')))
+
+
+def change_current_language(request):
+    response = set_language_view(request)
+    if hasattr(request.user, 'profile'):
+        request.user.profile.current_language = request.session[translation.LANGUAGE_SESSION_KEY]
+        request.user.profile.save()
+    return response
 
 
 def about(request):
