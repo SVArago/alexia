@@ -87,10 +87,12 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(verbose_name='product group', to='billing.ProductGroup'),
             preserve_default=True,
         ),
+        # We've changed the destination of the ForeignKey here, as the original destination doesn't exist anymore
+        # and Django can't really handle that well.
         migrations.AddField(
             model_name='permanentproduct',
             name='stockproduct',
-            field=models.ForeignKey(verbose_name='stock product', blank=True, to='stock.StockProduct', null=True),
+            field=models.ForeignKey(verbose_name='stock product', blank=True, to='billing.PermanentProduct', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
