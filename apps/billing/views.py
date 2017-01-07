@@ -11,7 +11,9 @@ from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from apps.billing.forms import FilterEventForm, PermanentProductForm, SellingPriceForm
+from apps.billing.forms import (
+    FilterEventForm, PermanentProductForm, SellingPriceForm,
+)
 from apps.billing.models import (
     PermanentProduct, PriceGroup, Product, ProductGroup, SellingPrice,
     TemporaryProduct,
