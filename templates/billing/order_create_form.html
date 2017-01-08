@@ -1,0 +1,37 @@
+{% extends 'base_app.html' %}
+{% load i18n crispy_forms_field %}
+
+{% block title %}{% blocktrans with event=event.name %}Add orders for {{ event }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{% blocktrans with event=event.name %}Add orders for {{ event }}{% endblocktrans %}</h1>
+</div>
+
+<form class="form-horizontal" method="post">
+    {% csrf_token %}
+    {{ form.management_form }}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{% trans 'Person' %}</th>
+                <th>{% trans 'Product' %}</th>
+                <th>{% trans 'Amount' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in form %}
+                <tr>
+                    {% for field in row %}
+                        <td>{% crispy_field field %}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <input type="submit" class="btn btn-primary pull-right" value="{% trans 'Save' %}" name="submit">
+</form>
+
+{% endblock %}
