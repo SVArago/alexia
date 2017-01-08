@@ -179,7 +179,7 @@ def payment_show(request, pk):
 @login_required
 @treasurer_required
 def stats_year(request, year):
-    months = Event.objects.extra({'month': "month(starts_at)"}) \
+    months = Event.objects.annotate(month=ExtractMonth('starts_at')) \
         .filter(organizer=request.organization, starts_at__year=year) \
         .values('month').annotate(revenue=Sum('orders__amount')) \
         .order_by('month')
