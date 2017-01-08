@@ -92,14 +92,6 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user)
 
-    def next_tending(self):
-        return BartenderAvailability.objects.filter(
-            user=self.user,
-            event__deleted=False,
-            event__ends_at__gte=timezone.now(),
-            availability__nature=Availability.ASSIGNED,
-        ).order_by('event__starts_at')[0].event
-
     def is_manager(self, organization=None):
         if not organization:
             return self.user.membership_set.filter(is_manager=True).exists()

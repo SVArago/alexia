@@ -24,9 +24,6 @@ DEFAULT_FROM_EMAIL = 'Alexia <alexia@localhost>'
 EMAIL_SUBJECT_PREFIX = '[Alexia] '
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-# Juliana
-JULIANA_COUNTDOWN = 5
-
 # File uploads
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

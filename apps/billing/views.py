@@ -19,13 +19,12 @@ from apps.billing.models import (
     TemporaryProduct,
 )
 from apps.scheduling.models import Event
-from utils.auth.decorators import manager_required, treasurer_required
-from utils.auth.mixins import ManagerRequiredMixin, TreasurerRequiredMixin
+from utils.auth.decorators import treasurer_required
+from utils.auth.mixins import TreasurerRequiredMixin
 from utils.mixins import (
     CreateViewForOrganization, CrispyFormMixin, EventOrganizerFilterMixin,
     FixedValueCreateView, OrganizationFilterMixin, OrganizationFormMixin,
 )
-
 from .models import Order, Purchase
 
 

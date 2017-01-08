@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import datetime
 
-from django.test.testcases import SimpleTestCase
 from django.utils import timezone
 from jsonrpc.exceptions import InvalidParamsError
 

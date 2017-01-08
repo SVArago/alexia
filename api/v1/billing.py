@@ -4,7 +4,6 @@ from jsonrpc import jsonrpc_method
 
 from apps.billing.models import Order
 from apps.organization.models import Organization
-from utils.auth.decorators import manager_required
 from .common import api_v1_site, format_order
 from .exceptions import NotFoundError
 
