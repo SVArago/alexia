@@ -142,7 +142,7 @@ class ConsumptionFormListView(ListView):
     def get_queryset(self):
         profile = self.request.user.profile
 
-        if profile.is_foundation_manager or request.user.is_superuser:
+        if profile.is_foundation_manager or self.request.user.is_superuser:
             qs = ConsumptionForm.objects.all()
         elif profile.is_manager(self.request.organization):
             qs = ConsumptionForm.objects.filter(event__organizer=self.request.organization)
