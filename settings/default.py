@@ -137,3 +137,10 @@ ROOT_URLCONF = 'urls'
 JULIANA_COUNTDOWN = 5
 JULIANA_WEBSOCKET_URL = 'ws://localhost:3000'
 JULIANA_WEBSOCKET_PROTOCOL = 'nfc'
+
+# Radius configuration
+RADIUS_HOST = ''
+RADIUS_PORT = 1645
+RADIUS_SECRET = ''
+RADIUS_IDENTIFIER = ''
+RADIUS_DICT = os.path.join(BASE_DIR, 'utils/auth/radius.dict')

@@ -29,8 +29,11 @@ DATABASES = {
 SECRET_KEY = ''
 
 # UT Radius login
+RADIUS_HOST = 'radius1.utsp.utwente.nl'
+RADIUS_PORT = 1645
 RADIUS_SECRET = ''
 RADIUS_IDENTIFIER = ''
+RADIUS_DICT = os.path.join(BASE_DIR, 'utils/auth/radius.dict')
 
 # Email settings
 EMAIL_HOST = 'localhost'
