@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-08 20:11+0100\n"
+"POT-Creation-Date: 2017-01-08 20:34+0100\n"
 "PO-Revision-Date: 2016-08-08 20:51+0200\n"
 "Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
@@ -15,6 +15,49 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "Event does not exist."
+msgstr "Activiteit bestaat niet."
+
+msgid "You are not a tender for this event."
+msgstr "Je bent geen tapper bij deze borrel."
+
+msgid "This event is not open yet."
+msgstr "Deze borrel is nog niet begonnen."
+
+#, python-format
+msgid "RFID-card %(uid)s not registered in Alexia."
+msgstr "RFID-kaart %(uid)s is niet geregistreerd in Alexia."
+
+#, python-format
+msgid "User %(user)s has no authorization at organization %(organization)s."
+msgstr ""
+"Gebruiker %(user)s heeft geen machtiging voor organisatie %(organization)s."
+
+msgid "User does not exist."
+msgstr "Gebruiker bestaat niet."
+
+msgid "RFID-card belongs to a different user."
+msgstr "Deze RFID-kaart is van een andere gebruiker."
+
+#, python-format
+msgid "Product %(product)s not found."
+msgstr "Product %(product)s bestaat niet."
+
+#, python-format
+msgid "Product %(product)s is not available for this event."
+msgstr "Product %(product)s is niet beschikbaar op deze activiteit."
+
+#, python-format
+msgid "Product %(product)s is broken."
+msgstr "Product %(product)s is kapot."
+
+msgid "Order of zero or negative amount is not allowed."
+msgstr "Een bestelling met geen of een negatief bedrag is niet toegestaan."
+
+#, python-format
+msgid "Price for product %(name)s is incorrect."
+msgstr "Bedrag voor product %(name)s is niet bekend."
 
 msgid "Owner"
 msgstr "Eigenaar"
@@ -275,14 +318,8 @@ msgstr "invoer op eenheid"
 msgid "unit entries"
 msgstr "invoer op eenheid"
 
-msgid "You are not a tender for this event."
-msgstr "Je bent geen tapper bij deze borrel."
-
 msgid "This consumption form has been completed."
 msgstr "Dit verbruiksformulier is al afgerond."
-
-msgid "This event is not open yet."
-msgstr "Deze borrel is nog niet begonnen."
 
 msgid "Availability"
 msgstr "Beschikbaarheid"
