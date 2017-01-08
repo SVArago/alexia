@@ -21,7 +21,7 @@ class MailTemplate(models.Model):
     NAME_CHOICES = (
         ('enrollopen', _('Enrollment open')),
         ('enrollclosed', _('Enrollment closed')),
-        ('reminder', _('Weekly reminder')),
+        ('reminder', _('Reminder')),
     )
 
     organization = models.ForeignKey('organization.Organization', models.CASCADE, verbose_name=_('organization'))

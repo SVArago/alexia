@@ -70,6 +70,9 @@
     {% if object.is_completed %}
     <p>&nbsp;</p>
     <hr>
-    <p style="text-align: center">{% trans 'Signed off by' %} {{ object.completed_by.get_full_name }} {% trans 'on' %} {{ object.completed_at|date:"l j F Y" }} {% trans 'at' %} {{ object.completed_at|date:"H:i"}}.</p>
+    <p style="text-align: center">
+        {% trans 'Signed off by' %}
+        {% blocktrans with name=object.completed_by.get_full_name date=object.completed_at|date:"l j F Y" time=object.completed_at|date:"H:i" %}{{ name }} on {{ date }} at {{ time }}{% endblocktrans %}.
+    </p>
     {% endif %}
 </div>

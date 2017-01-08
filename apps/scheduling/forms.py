@@ -66,7 +66,7 @@ class EventForm(AlexiaModelForm):
         locations = cleaned_data.get('location')
 
         if starts_at and ends_at and starts_at > ends_at:
-            raise ValidationError(_("The start time is earlier than the end time!"))
+            raise ValidationError(_("The start time is later than the end time!"))
 
         if starts_at and ends_at and locations:
             for location in locations:

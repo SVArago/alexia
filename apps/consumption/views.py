@@ -62,7 +62,7 @@ def complete_dcf(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
     if not event.is_tender(request.user):
-        return render(request, '403.html', {'reason': _('You are not a tender for this event')}, status=403)
+        return render(request, '403.html', {'reason': _('You are not a tender for this event.')}, status=403)
 
     if not hasattr(event, 'consumptionform'):
         raise Http404

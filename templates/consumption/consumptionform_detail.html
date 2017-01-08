@@ -45,11 +45,7 @@
             {% if object.is_completed %}
             <h3>{% trans 'Signed off by' %}</h3>
             <p>
-                {{ object.completed_by.get_full_name }}
-                {% trans 'on' %}
-                {{ object.completed_at|date:"l j F Y" }}
-                {% trans 'at' %}
-                {{ object.completed_at|date:"H:i"}}
+                {% blocktrans with name=object.completed_by.get_full_name date=object.completed_at|date:"l j F Y" time=object.completed_at|date:"H:i" %}{{ name }} on {{ date }} at {{ time }}{% endblocktrans %}
             </p>
             {% endif %}
             {% if object.comments %}

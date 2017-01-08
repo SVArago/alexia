@@ -1,12 +1,12 @@
 # Dutch translations for Alexia.
-# Copyright (C) 2011-2015
+# Copyright (C) 2011-2017
 # This file is distributed under the same license as the Alexia package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-13 10:50+0100\n"
+"POT-Creation-Date: 2017-01-08 20:11+0100\n"
 "PO-Revision-Date: 2016-08-08 20:51+0200\n"
 "Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
@@ -67,14 +67,26 @@ msgstr "Achtergrondkleur"
 msgid "Background color for Juliana"
 msgstr "Achtergrondkleur voor Juliana"
 
+msgid "Is food?"
+msgstr "Is eten?"
+
+msgid "deleted"
+msgstr "verwijderd"
+
 msgid "position"
 msgstr "positie"
 
 msgid "event"
 msgstr "activiteit"
 
-msgid "identifier"
-msgstr "identifier"
+msgid "ATQA"
+msgstr "ATQA"
+
+msgid "SAK"
+msgstr "SAK"
+
+msgid "UID"
+msgstr "UID"
 
 msgid "is active"
 msgstr "is actief"
@@ -106,8 +118,9 @@ msgstr "autorisatie"
 msgid "authorizations"
 msgstr "autorisaties"
 
-msgid "at"
-msgstr "om"
+#, python-format
+msgid "%(user)s at %(organization)s"
+msgstr "%(user)s bij %(organization)s"
 
 msgid "placed at"
 msgstr "geplaatst op"
@@ -124,14 +137,11 @@ msgstr "toegevoegd door"
 msgid "amount"
 msgstr "aantal"
 
-msgid "rfid card"
-msgstr "RFID-kaart"
-
 msgid "order"
-msgstr "transactie"
+msgstr "bestelling"
 
 msgid "orders"
-msgstr "transacties"
+msgstr "bestelling"
 
 msgid "product"
 msgstr "product"
@@ -173,6 +183,12 @@ msgstr "Ik verklaar dat dit formulier naar waarheid is ingevuld"
 msgid ""
 "I am sure that the values above are filled in correct and has been verified."
 msgstr "Ik weet zeker dat bovenstaande gegevens gecheckt zijn en kloppen."
+
+msgid "Month"
+msgstr "Maand"
+
+msgid "Year"
+msgstr "Jaar"
 
 msgid "consumption product"
 msgstr "voorraadproduct"
@@ -265,11 +281,8 @@ msgstr "Je bent geen tapper bij deze borrel."
 msgid "This consumption form has been completed."
 msgstr "Dit verbruiksformulier is al afgerond."
 
-msgid "You are not a tender for this event"
-msgstr "Je bent geen tapper bij deze borrel!"
-
-msgid "This event is not open"
-msgstr "Deze borrel begint nog niet!"
+msgid "This event is not open yet."
+msgstr "Deze borrel is nog niet begonnen."
 
 msgid "Availability"
 msgstr "Beschikbaarheid"
@@ -278,7 +291,7 @@ msgid "RADIUS username"
 msgstr "RADIUS-gebruikersnaam"
 
 msgid "Student or employee account"
-msgstr "Student- of medewerkers-gebruikersnaam"
+msgstr "Student- of medewerkers-account"
 
 msgid "is public"
 msgstr "is openbaar"
@@ -327,14 +340,17 @@ msgstr "is stichtingsmananger"
 msgid "Designates that this user is manager of the purchasing foundation."
 msgstr "Geeft aan dat deze gebruiker manager is van de inkoopstichting."
 
+msgid "is external entity"
+msgstr "is externe partij"
+
 msgid "current organization"
 msgstr "huidige organisatie"
 
+msgid "current language"
+msgstr "huidige taal"
+
 msgid "iCal identifier"
 msgstr "iCal identificatie"
-
-msgid "is external entity"
-msgstr "is externe partij"
 
 msgid "profile"
 msgstr "profiel"
@@ -352,7 +368,7 @@ msgid "users"
 msgstr "gebruikers"
 
 msgid "organizations"
-msgstr "organisatie"
+msgstr "organisaties"
 
 msgid "may tend on events"
 msgstr "mag op borrels tappen"
@@ -363,8 +379,11 @@ msgstr "mag borrels aanmaken en wijzigen"
 msgid "may create and modify users"
 msgstr "mag gebruikers aanmaken en wijzigen"
 
+msgid "may see and manage finances"
+msgstr "mag financiën zien en beheren"
+
 msgid "is currently active"
-msgstr "is actief"
+msgstr "is momenteel actief"
 
 msgid "membership"
 msgstr "lidmaatschap"
@@ -409,7 +428,7 @@ msgstr "Begin"
 msgid "Ends at"
 msgstr "Einde"
 
-msgid "The start time is earlier than the end time!"
+msgid "The start time is later than the end time!"
 msgstr "De begintijd kan niet na de eindtijd zijn."
 
 #, python-format
@@ -431,8 +450,8 @@ msgstr "Inschrijving geopend"
 msgid "Enrollment closed"
 msgstr "Inschrijving gesloten"
 
-msgid "Weekly reminder"
-msgstr "Wekelijkse herinnering"
+msgid "Reminder"
+msgstr "Herinnering"
 
 msgid "subject"
 msgstr "onderwerp"
@@ -629,6 +648,9 @@ msgstr "Kalender"
 msgid "Personal schedule"
 msgstr "Tappersrooster"
 
+msgid "Availability matrix"
+msgstr "Beschikbaarheidsmatrix"
+
 msgid "Availabilities"
 msgstr "Beschikbaarheden"
 
@@ -689,6 +711,22 @@ msgstr "Gebruikersnaam"
 msgid "Password"
 msgstr "Wachtwoord"
 
+#, python-format
+msgid "Add orders for %(event)s"
+msgstr "Bestellingen toevoegen voor %(event)s"
+
+msgid "Person"
+msgstr "Persoon"
+
+msgid "Product"
+msgstr "Product"
+
+msgid "Amount"
+msgstr "Aantal"
+
+msgid "Save"
+msgstr "Opslaan"
+
 msgid "Permanent product"
 msgstr "Permanent product"
 
@@ -700,6 +738,9 @@ msgstr "Naam"
 
 msgid "Product group"
 msgstr "Productgroep"
+
+msgid "Food"
+msgstr "Eten"
 
 msgid "Modify"
 msgstr "Wijzigen"
@@ -730,6 +771,9 @@ msgstr "Toevoegen"
 msgid "Actions"
 msgstr "Acties"
 
+msgid "Delete"
+msgstr "Verwijderen"
+
 msgid "No permanent products defined."
 msgstr "Geen permanente producten gedefinieerd."
 
@@ -741,9 +785,6 @@ msgstr "Prijzen"
 
 msgid "Price"
 msgstr "Prijs"
-
-msgid "Delete"
-msgstr "Verwijderen"
 
 msgid "No prices defined."
 msgstr "Geen prijzen gedefinieerd."
@@ -761,6 +802,25 @@ msgstr "Prijscategoriën van %(organization)s"
 
 msgid "No price groups defined."
 msgstr "Geen prijscategoriën gedefinieerd."
+
+#, python-format
+msgid "Delete product %(object)s"
+msgstr "Verwijder product %(object)s"
+
+#, python-format
+msgid "Are you sure you want to delete product \"%(object)s\"?"
+msgstr "Weet je zeker dat je product %(object)s wil verwijderen?"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+#, python-format
+msgid "Delete productgroup %(object)s"
+msgstr "Verwijder productgroep %(object)s"
+
+#, python-format
+msgid "Are you sure you want to delete productgroup \"%(object)s\"?"
+msgstr "Weet je zeker dat je de productgroep %(object)s wil verwijderen?"
 
 msgid "No products defined."
 msgstr "Geen producten gedefinieerd."
@@ -786,9 +846,6 @@ msgstr "Verwijder verkoopprijs %(object)s"
 #, python-format
 msgid "Are you sure you want to delete selling price %(object)s?"
 msgstr "Weet je zeker dat je de verkoopprijs %(object)s wil verwijderen?"
-
-msgid "Cancel"
-msgstr "Annuleren"
 
 #, python-format
 msgid "Edit selling price %(object)s"
@@ -833,6 +890,10 @@ msgstr "In behandeling"
 
 msgid "Signed off by"
 msgstr "Ondertekend door"
+
+#, python-format
+msgid "%(name)s on %(date)s at %(time)s"
+msgstr "%(name)s op %(date)s om %(time)s"
 
 msgid "Begin weight"
 msgstr "Begingewicht"
@@ -885,9 +946,6 @@ msgstr "Verbruiksformulier"
 msgid "Digital consumption form"
 msgstr "Digitaal verbruiksformulier"
 
-msgid "Save"
-msgstr "Opslaan"
-
 msgid "Complete form"
 msgstr "Formulier afronden"
 
@@ -920,9 +978,6 @@ msgstr "Terug"
 
 msgid "By units"
 msgstr "Op eenheden"
-
-msgid "Product"
-msgstr "Product"
 
 msgid "Units consumed"
 msgstr "Eenheden verbruikt"
@@ -1008,7 +1063,7 @@ msgid "Log in"
 msgstr "Inloggen"
 
 msgid "Log in with your student or employee account and password."
-msgstr "Log in met je student- of medewerkers-gebruikersnaam en wachtwoord."
+msgstr "Log in met je student- of medewerkers-account en wachtwoord."
 
 msgid "Registration"
 msgstr "Registratie"
@@ -1067,6 +1122,9 @@ msgstr "Tapper"
 
 msgid "Planner"
 msgstr "Planner"
+
+msgid "Treasurer"
+msgstr "Penningmeester"
 
 msgid "Manager"
 msgstr "Manager"
@@ -1143,17 +1201,11 @@ msgstr "Transacties van %(organization)s"
 msgid "Summary"
 msgstr "Samenvatting"
 
-msgid "Month"
-msgstr "Maand"
-
 msgid "Revenue"
 msgstr "Omzet"
 
 msgid "Specification"
 msgstr "Specificatie"
-
-msgid "Year"
-msgstr "Jaar"
 
 msgid "Transactions"
 msgstr "Transacties"
@@ -1161,8 +1213,11 @@ msgstr "Transacties"
 msgid "hasn't used Alexia Billing yet!"
 msgstr "heeft Alexia Financieel nog niet in gebruik!"
 
-msgid "# Transactions"
-msgstr "# Transacties"
+msgid "Tenders"
+msgstr "Tappers"
+
+msgid "Number of transactions"
+msgstr "Aantal transacties"
 
 msgid "Total revenue"
 msgstr "Totale omzet"
@@ -1182,20 +1237,17 @@ msgstr "Verkopen aan externe partijen"
 msgid "ID"
 msgstr "ID"
 
-msgid "Amount"
-msgstr "Bedrag"
+msgid "Order"
+msgstr "Bestelling"
 
 msgid "Timestamp"
-msgstr "Tijdstempel"
+msgstr "Tijd"
 
 msgid "Synchronized"
 msgstr "Gesynchroniseerd"
 
 msgid "Payment"
 msgstr "Betaling"
-
-msgid "Handled by"
-msgstr "Afgehandeld door"
 
 msgid "Items"
 msgstr "Specificatie"
@@ -1250,7 +1302,7 @@ msgstr ""
 msgid "ID number"
 msgstr "Identificatienr."
 
-msgid "Sinds"
+msgid "Since"
 msgstr "Sinds"
 
 msgid "You don't have any registered RFID cards."
@@ -1288,7 +1340,7 @@ msgid "Copy to clipboard"
 msgstr "Kopieer naar klembord"
 
 msgid "IVA certificate"
-msgstr "IVA certificaat"
+msgstr "IVA-certificaat"
 
 msgid "Manage certificate"
 msgstr "IVA-certificaat instellen"
@@ -1369,10 +1421,10 @@ msgstr "Er is geen tappersinstructie."
 msgid "Temporary products"
 msgstr "Tijdelijke producten"
 
-msgid "Temporary products can only be created or modified by managers."
+msgid "Temporary products can only be created or modified by treasurers."
 msgstr ""
 "Tijdelijke producten kunnen alleen aangemaakt of gewijzigd worden door "
-"managers."
+"penningmeesters."
 
 msgid "No temporary products defined."
 msgstr "Geen tijdelijke producten gedefinieerd."
@@ -1536,18 +1588,25 @@ msgstr "Risicoactiviteit"
 msgid "Point of sale"
 msgstr "Kassa"
 
-msgid "DCF"
-msgstr "DVF"
-
 #, python-format
 msgid "No events have been planned after %(s)s."
 msgstr "Er zijn geen activiteiten gepland na %(s)s."
+
+#, python-format
+msgid "Availability matrix of %(organization)s"
+msgstr "Beschikbaarheidsmatrix van %(organization)s"
+
+msgid "Tender"
+msgstr "Tapper"
 
 msgid "Never"
 msgstr "Nooit"
 
 msgid "Unknown"
 msgstr "Onbekend"
+
+msgid "No events have been planned."
+msgstr "Er zijn geen activiteiten gepland."
 
 msgid "AJAX-request required"
 msgstr "AJAX-request verplicht"
@@ -1556,13 +1615,16 @@ msgid "You are not a tender of the selected organization."
 msgstr "Je bent geen tapper bij de geselecteerde organisatie!"
 
 msgid "You are not a planner of the selected organization."
-msgstr "Je bent geen plannerbij de geselecteerde organisatie!"
+msgstr "Je bent geen planner bij de geselecteerde organisatie!"
+
+msgid "You are not a treasurer of the selected organization."
+msgstr "Je bent geen penningmeester bij de geselecteerde organisatie!"
 
 msgid "You are not a manager of the selected organization."
-msgstr "Je bent geen managerbij de geselecteerde organisatie!"
+msgstr "Je bent geen manager bij de geselecteerde organisatie!"
 
 msgid "You are not a foundation manager."
-msgstr "Je bent geen stichtingsmananger."
+msgstr "Je bent geen stichtingsmanager."
 
 msgid "Javascript must be enabled to reveal email address"
 msgstr "Javascript moet zijn ingeschakeld om dit e-mailadres te bekijken."

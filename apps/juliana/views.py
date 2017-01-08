@@ -57,9 +57,9 @@ def juliana(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
     if not event.is_tender(request.user):
-        return render(request, '403.html', {'reason': _('You are not a tender for this event')}, status=403)
+        return render(request, '403.html', {'reason': _('You are not a tender for this event.')}, status=403)
     if not event.can_be_opened(request.user):
-        return render(request, '403.html', {'reason': _('This event is not open')}, status=403)
+        return render(request, '403.html', {'reason': _('This event is not open yet.')}, status=403)
 
     # data
     products = _get_product_list(event)

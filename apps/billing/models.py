@@ -232,7 +232,7 @@ class Authorization(models.Model):
         verbose_name_plural = _('authorizations')
 
     def __str__(self):
-        return '%s %s %s' % (self.user, _('at'), self.organization)
+        return _('%(user)s at %(organization)s') % {'user': self.user, 'organization': self.organization}
 
     @classmethod
     def get_for_user_event(cls, user, event):
@@ -278,7 +278,7 @@ class Order(models.Model):
         related_name='+',
     )
     amount = models.DecimalField(_('amount'), max_digits=15, decimal_places=2)
-    rfidcard = models.ForeignKey(RfidCard, models.PROTECT, verbose_name=_('rfid card'), blank=True, null=True)
+    rfidcard = models.ForeignKey(RfidCard, models.PROTECT, verbose_name=_('RFID card'), blank=True, null=True)
 
     class Meta:
         verbose_name = _('order')
