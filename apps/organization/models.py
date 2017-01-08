@@ -125,36 +125,6 @@ class Profile(models.Model):
         else:
             return self.user.membership_set.filter(organization=organization, is_tender=True).exists()
 
-    def is_membership_or_higher(self, organization=None):
-        return self.is_membership(organization) or self.is_planner_or_higher(organization)
-
-    def is_planner_or_higher(self, organization=None):
-        return self.is_planner() or self.is_organization_manager_or_higher(organization)
-
-    def is_organization_manager_or_higher(self, organization=None):
-        return self.is_manager(organization)
-
-    def can_add_memberships(self, organization=None):
-        return self.is_manager_or_higher(organization)
-
-    def can_edit_memberships(self, organization=None):
-        return self.is_manager_or_higher(organization)
-
-    def can_add_events(self, organization=None):
-        return self.is_planner_or_higher(organization)
-
-    def can_edit_events(self, organization=None):
-        return self.is_planner_or_higher(organization)
-
-    def can_view_pricegroups(self, organization=None):
-        return self.can_add_events(organization) or self.can_edit_events(organization)
-
-    def can_edit_membershipavailability(self, user=None, organization=None):
-        if user != self.user:
-            return self.is_planner_or_higher(organization)
-        else:
-            return self.is_membership_or_higher(organization)
-
     def has_iva(self):
         try:
             approval_date = self.user.certificate.approved_at
