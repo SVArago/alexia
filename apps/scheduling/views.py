@@ -132,6 +132,7 @@ def event_show(request, pk):
     is_tender = event.is_tender(request.user)
     is_planner = request.user.is_authenticated() and request.user.profile.is_planner(event.organizer)
     is_manager = request.user.is_authenticated() and request.user.profile.is_manager(event.organizer)
+    is_treasurer = request.user.is_authenticated() and request.user.profile.is_treasurer(event.organizer)
 
     if is_planner:
         tenders = Membership.objects.select_related('user').filter(

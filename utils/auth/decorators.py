@@ -52,6 +52,17 @@ def manager_required(f):
     return wrap
 
 
+def treasurer_required(f):
+    @wraps(f)
+    def wrap(request, *args, **kwargs):
+        if not request.user.is_authenticated() or not request.user.is_superuser and (
+                not request.organization or not request.user.profile.is_treasurer(request.organization)):
+            raise PermissionDenied
+        return f(request, *args, **kwargs)
+
+    return wrap
+
+
 def foundation_manager_required(f):
     @wraps(f)
     def wrap(request, *args, **kwargs):

@@ -106,6 +106,13 @@ class Profile(models.Model):
         else:
             return self.user.membership_set.filter(organization=organization, is_manager=True).exists()
 
+    def is_treasurer(self, organization=None):
+        if not organization:
+            return self.user.membership_set.filter(is_treasurer=True).exists()
+        else:
+            return self.user.membership_set.filter(organization=organization,
+                                                   is_treasurer=True).exists()
+
     def is_planner(self, organization=None):
         if not organization:
             return self.user.membership_set.filter(is_planner=True).exists()

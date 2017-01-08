@@ -52,6 +52,8 @@
                         {% trans 'Users' %}
                     </a>
                 </li>
+                {% endif %}
+                {% if current_organization and user.profile.is_treasurer or user.is_superuser %}
                 <li class="dropdown {% active_menu 'apps.billing.views' 'active' %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         {% trans 'Billing' %}
