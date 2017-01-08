@@ -82,6 +82,5 @@ class BillingTest(APITestCase):
 
         self.send_and_compare_request_error('order.marksynchronized', [self.data['order1'].id*10],
                                             error_code=404,
-                                            error_name='NotFoundError',
-                                            error_message='NotFoundError: Not Found.',
+                                            error_name='NotFoundError'
                                             )

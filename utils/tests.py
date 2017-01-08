@@ -240,7 +240,7 @@ class APITestCase(TestCase):
 
         self.assertJSONEqual(content, expected_data)
 
-    def send_and_compare_request_error(self, method, params, error_code, error_name, error_message, error_data=None,
+    def send_and_compare_request_error(self, method, params, error_code, error_name, error_data=None,
                                        status_code=200):
         """
         Send JSON RPC method call and compare actual error result with expected error result.
@@ -248,7 +248,6 @@ class APITestCase(TestCase):
         :param params: Parameters for JSON RPC call.
         :param error_code: Expected error code.
         :param error_name: Expected error name.
-        :param error_message: Expected error message.
         :param error_data: Expected error data.
         :param status_code: Expected HTTP status code.
         """
@@ -262,6 +261,11 @@ class APITestCase(TestCase):
         self.assertEqual(response['Content-Type'], 'application/json-rpc')
 
         content = response.content.decode('utf-8')
+        content_data = json.loads(content)
+
+        # Don't compare error messages, as these may change and aren't that relevant
+        if 'error' in content_data and 'message' in content_data['error']:
+            del content_data['error']['message']
 
         expected_data = {
             'jsonrpc': '1.0',
@@ -269,10 +273,9 @@ class APITestCase(TestCase):
             'error': {
                 'code': error_code,
                 'name': error_name,
-                'message': error_message,
                 'data': error_data,
             },
             'result': None,
         }
 
-        self.assertJSONEqual(content, expected_data, 'JSON RPC result')
+        self.assertEqual(content_data, expected_data, 'JSON RPC result')

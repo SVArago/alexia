@@ -186,8 +186,7 @@ class JulianaTest(APITestCase):
             'juliana.rfid.get', [event_id, rfid_data],
             status_code=500,
             error_code=-32602,
-            error_name='InvalidParamsError',
-            error_message='InvalidParamsError: RFID card not found',
+            error_name='InvalidParamsError'
         )
 
     def test_rfid_get_no_authorization(self):
@@ -206,8 +205,7 @@ class JulianaTest(APITestCase):
             'juliana.rfid.get', [event_id, rfid_data],
             status_code=500,
             error_code=-32602,
-            error_name='InvalidParamsError',
-            error_message='InvalidParamsError: No authorization found for user',
+            error_name='InvalidParamsError'
         )
 
     def test_rfid_get_other_authorization(self):
@@ -226,8 +224,7 @@ class JulianaTest(APITestCase):
             'juliana.rfid.get', [event_id, rfid_data],
             status_code=500,
             error_code=-32602,
-            error_name='InvalidParamsError',
-            error_message='InvalidParamsError: No authorization found for user',
+            error_name='InvalidParamsError'
         )
 
     def test_rfid_get_invalid_event(self):
@@ -243,8 +240,7 @@ class JulianaTest(APITestCase):
             'juliana.rfid.get', [event_id, rfid_data],
             status_code=500,
             error_code=-32602,
-            error_name='InvalidParamsError',
-            error_message='InvalidParamsError: Event does not exist',
+            error_name='InvalidParamsError'
         )
 
     def test_user_check_no_orders(self):
@@ -272,8 +268,7 @@ class JulianaTest(APITestCase):
             'juliana.user.check', [event_id, user_id],
             status_code=500,
             error_code=-32602,
-            error_name='InvalidParamsError',
-            error_message='InvalidParamsError: Event does not exist',
+            error_name='InvalidParamsError'
         )
 
     def test_user_check_invalid_user(self):
@@ -285,5 +280,4 @@ class JulianaTest(APITestCase):
             status_code=500,
             error_code=-32602,
             error_name='InvalidParamsError',
-            error_message='InvalidParamsError: User does not exist',
         )
