@@ -130,8 +130,12 @@ def event_show(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
     is_tender = event.is_tender(request.user)
-    is_planner = request.user.is_authenticated() and request.user.profile.is_planner(event.organizer)
-    is_manager = request.user.is_authenticated() and request.user.profile.is_manager(event.organizer)
+    is_planner = request.user.is_authenticated() and (request.user.profile.is_planner(event.organizer) or
+                                                      request.user.is_superuser)
+    is_manager = request.user.is_authenticated() and (request.user.profile.is_manager(event.organizer) or
+                                                      request.user.is_superuser)
+    is_treasurer = request.user.is_authenticated() and (request.user.profile.is_treasurer(event.organizer) or
+                                                        request.user.is_superuser)
 
     if is_planner:
         tenders = Membership.objects.select_related('user').filter(

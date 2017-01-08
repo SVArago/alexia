@@ -36,22 +36,24 @@
                         <li><a href="{% url 'schedule' %}">{% trans 'List' %}</a></li>
                         <li><a href="{% url 'calendar-schedule' %}">{% trans 'Calendar' %}</a></li>
                         {% if request.user.profile.is_tender %}<li><a href="{% url 'bartender-schedule' %}">{% trans 'Personal schedule' %}</a></li>{% endif %}
-                        {% if current_organization and request.user.profile.is_planner %}
+                        {% if current_organization and request.user.profile.is_planner or request.user.is_superuser %}
                         <li><a href="{% url 'matrix-schedule' %}">{% trans 'Availability matrix' %}</a></li>
                         {% endif %}
-                        {% if current_organization and request.user.profile.is_manager %}
+                        {% if current_organization and request.user.profile.is_manager or request.user.is_superuser %}
                         <li class="divider"></li>
                         <li><a href="{% url 'availability_list' %}">{% trans 'Availabilities' %}</a></li>
                         <li><a href="{% url 'mailtemplate_list' %}">{% trans 'Mail templates' %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
-                {% if current_organization and request.user.profile.is_manager %}
+                {% if current_organization and user.profile.is_manager or user.is_superuser %}
                 <li class="{% active_menu 'apps.organization.views' 'active' %}">
                     <a href="{% url 'memberships' %}">
                         {% trans 'Users' %}
                     </a>
                 </li>
+                {% endif %}
+                {% if current_organization and user.profile.is_treasurer or user.is_superuser %}
                 <li class="dropdown {% active_menu 'apps.billing.views' 'active' %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         {% trans 'Billing' %}
@@ -67,7 +69,7 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if current_organization and user.profile.is_manager or user.profile.is_foundation_manager %}
+                {% if current_organization and user.profile.is_manager or user.profile.is_foundation_manager or user.is_superuser %}
                 <li class="dropdown {% active_menu 'apps.consumption.views' 'active' %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         {% trans 'Consumption' %}

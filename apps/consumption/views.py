@@ -144,7 +144,7 @@ class ConsumptionFormListView(ListView):
 
         if profile.is_foundation_manager or self.request.user.is_superuser:
             qs = ConsumptionForm.objects.all()
-        elif profile.is_manager(self.request.organization):
+        elif profile.is_manager(self.request.organization) or profile.is_treasurer(self.request.organization):
             qs = ConsumptionForm.objects.filter(event__organizer=self.request.organization)
         else:
             raise PermissionDenied
@@ -159,7 +159,8 @@ class ConsumptionFormDetailView(DetailView):
         self.object = self.get_object()
 
         if not request.user.is_superuser and not request.user.profile.is_foundation_manager \
-                and not request.user.profile.is_manager(self.object.event.organizer):
+                and not request.user.profile.is_manager(self.object.event.organizer) \
+                and not request.user.profile.is_treasurer(self.object.event.organizer):
             raise PermissionDenied
 
         context = self.get_context_data(object=self.object)
@@ -173,7 +174,8 @@ class ConsumptionFormPDFView(PDFTemplateView):
         self.object = get_object_or_404(ConsumptionForm, pk=kwargs['pk'])
 
         if not request.user.is_superuser and not request.user.profile.is_foundation_manager \
-                and not request.user.profile.is_manager(self.object.event.organizer):
+                and not request.user.profile.is_manager(self.object.event.organizer) \
+                and not request.user.profile.is_treasurer(self.object.event.organizer):
             raise PermissionDenied
 
         return super(ConsumptionFormPDFView, self).get(request, *args, **kwargs)

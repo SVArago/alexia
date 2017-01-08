@@ -50,7 +50,7 @@ class MembershipAddForm(AlexiaForm):
 class MembershipEditForm(AlexiaModelForm):
     class Meta:
         model = Membership
-        fields = ['is_active', 'is_tender', 'is_planner', 'is_manager', 'comments']
+        fields = ['is_active', 'is_tender', 'is_planner', 'is_treasurer', 'is_manager', 'comments']
 
 
 class CreateUserForm(AlexiaModelForm):

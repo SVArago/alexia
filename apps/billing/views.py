@@ -19,8 +19,8 @@ from apps.billing.models import (
     TemporaryProduct,
 )
 from apps.scheduling.models import Event
-from utils.auth.decorators import manager_required
-from utils.auth.mixins import ManagerRequiredMixin
+from utils.auth.decorators import manager_required, treasurer_required
+from utils.auth.mixins import ManagerRequiredMixin, TreasurerRequiredMixin
 from utils.mixins import (
     CreateViewForOrganization, CrispyFormMixin, EventOrganizerFilterMixin,
     FixedValueCreateView, OrganizationFilterMixin, OrganizationFormMixin,
@@ -30,7 +30,7 @@ from .models import Order, Purchase
 
 
 @login_required
-@manager_required
+@treasurer_required
 def order_list(request):
     event_list = Event.objects.filter(organizer=request.organization) \
         .annotate(order_count=Count('orders'), revenue=Sum('orders__amount')) \
@@ -54,7 +54,7 @@ def order_list(request):
 
 
 @login_required
-@manager_required
+@treasurer_required
 def order_show(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
@@ -92,7 +92,7 @@ def order_show(request, pk):
 
 
 @login_required
-@manager_required
+@treasurer_required
 def order_export(request):
     if request.method == 'POST':
         form = FilterEventForm(request.POST)
@@ -124,20 +124,20 @@ def payment_show(request, pk):
     order = get_object_or_404(Order, pk=pk)
 
     # bekijk als: * dit mijn transactie is
-    #             * ik manager van de vereniging in kwestie ben
+    #             * ik penningmeester van de organisatie in kwestie ben
     #             * ik superuser ben
     if (order.authorization.user == request.user) \
             or request.user.is_superuser \
             or (request.organization and
                 request.organization == order.authorization.organization and
-                request.user.profile.is_manager(request.organization)):
+                request.user.profile.is_treasurer(request.organization)):
         return render(request, 'payment/show.html', locals())
 
     raise PermissionDenied
 
 
 @login_required
-@manager_required
+@treasurer_required
 def stats_year(request, year):
     months = Event.objects.extra({'month': "month(starts_at)"}) \
         .filter(organizer=request.organization, starts_at__year=year) \
@@ -147,7 +147,7 @@ def stats_year(request, year):
 
 
 @login_required
-@manager_required
+@treasurer_required
 def stats_month(request, year, month):
     month = int(month)
     events = Event.objects.filter(
@@ -159,51 +159,51 @@ def stats_month(request, year, month):
     return render(request, "order/stats_month.html", locals())
 
 
-class PriceGroupListView(ManagerRequiredMixin, OrganizationFilterMixin, ListView):
+class PriceGroupListView(TreasurerRequiredMixin, OrganizationFilterMixin, ListView):
     model = PriceGroup
 
 
-class PriceGroupDetailView(ManagerRequiredMixin, OrganizationFilterMixin, DetailView):
+class PriceGroupDetailView(TreasurerRequiredMixin, OrganizationFilterMixin, DetailView):
     model = PriceGroup
 
 
-class PriceGroupCreateView(ManagerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, CreateViewForOrganization):
-    model = PriceGroup
-    fields = ['name']
-
-
-class PriceGroupUpdateView(ManagerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, UpdateView):
+class PriceGroupCreateView(TreasurerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, CreateViewForOrganization):
     model = PriceGroup
     fields = ['name']
 
 
-class ProductGroupListView(ManagerRequiredMixin, OrganizationFilterMixin, ListView):
+class PriceGroupUpdateView(TreasurerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, UpdateView):
+    model = PriceGroup
+    fields = ['name']
+
+
+class ProductGroupListView(TreasurerRequiredMixin, OrganizationFilterMixin, ListView):
     model = ProductGroup
 
 
-class ProductGroupDetailView(ManagerRequiredMixin, OrganizationFilterMixin, DetailView):
+class ProductGroupDetailView(TreasurerRequiredMixin, OrganizationFilterMixin, DetailView):
     model = ProductGroup
 
 
-class ProductGroupCreateView(ManagerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin,
+class ProductGroupCreateView(TreasurerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin,
                              CreateViewForOrganization):
     model = ProductGroup
     fields = ['name']
 
 
-class ProductGroupUpdateView(ManagerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, UpdateView):
+class ProductGroupUpdateView(TreasurerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, UpdateView):
     model = ProductGroup
     fields = ['name']
 
 
-class ProductGroupDeleteView(ManagerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, DeleteView):
+class ProductGroupDeleteView(TreasurerRequiredMixin, OrganizationFilterMixin, CrispyFormMixin, DeleteView):
     model = ProductGroup
 
     def get_success_url(self):
         return reverse('productgroup_list')
 
 
-class ProductRedirectView(ManagerRequiredMixin, SingleObjectMixin, RedirectView):
+class ProductRedirectView(TreasurerRequiredMixin, SingleObjectMixin, RedirectView):
     """
     View to redirect to either the PermanentProductDetailView or the
     TemporaryProductDetailView depending on the type of product.
@@ -224,18 +224,18 @@ class ProductRedirectView(ManagerRequiredMixin, SingleObjectMixin, RedirectView)
         return super(ProductRedirectView, self).get_redirect_url(*args, **kwargs)
 
 
-class PermanentProductListView(ManagerRequiredMixin, OrganizationFilterMixin, ListView):
+class PermanentProductListView(TreasurerRequiredMixin, OrganizationFilterMixin, ListView):
     model = PermanentProduct
 
     def get_queryset(self):
         return super(PermanentProductListView, self).get_queryset().order_by('position')
 
 
-class PermanentProductDetailView(ManagerRequiredMixin, OrganizationFilterMixin, DetailView):
+class PermanentProductDetailView(TreasurerRequiredMixin, OrganizationFilterMixin, DetailView):
     model = PermanentProduct
 
 
-class PermanentProductCreateView(ManagerRequiredMixin, OrganizationFormMixin, CrispyFormMixin,
+class PermanentProductCreateView(TreasurerRequiredMixin, OrganizationFormMixin, CrispyFormMixin,
                                  CreateViewForOrganization):
     """
     Create view for permanent products.
@@ -253,13 +253,13 @@ class PermanentProductCreateView(ManagerRequiredMixin, OrganizationFormMixin, Cr
         return initial
 
 
-class PermanentProductUpdateView(ManagerRequiredMixin, OrganizationFilterMixin, OrganizationFormMixin, CrispyFormMixin,
+class PermanentProductUpdateView(TreasurerRequiredMixin, OrganizationFilterMixin, OrganizationFormMixin, CrispyFormMixin,
                                  UpdateView):
     model = PermanentProduct
     form_class = PermanentProductForm
 
 
-class PermanentProductDeleteView(ManagerRequiredMixin, OrganizationFilterMixin, OrganizationFormMixin, CrispyFormMixin,
+class PermanentProductDeleteView(TreasurerRequiredMixin, OrganizationFilterMixin, OrganizationFormMixin, CrispyFormMixin,
                                  DeleteView):
     model = PermanentProduct
     template_name = "billing/product_confirm_delete.html"
@@ -271,11 +271,11 @@ class PermanentProductDeleteView(ManagerRequiredMixin, OrganizationFilterMixin, 
         return HttpResponseRedirect(reverse('permanentproduct_list'))
 
 
-class TemporaryProductDetailView(ManagerRequiredMixin, EventOrganizerFilterMixin, DetailView):
+class TemporaryProductDetailView(TreasurerRequiredMixin, EventOrganizerFilterMixin, DetailView):
     model = TemporaryProduct
 
 
-class TemporaryProductCreateView(ManagerRequiredMixin, CrispyFormMixin, FixedValueCreateView):
+class TemporaryProductCreateView(TreasurerRequiredMixin, CrispyFormMixin, FixedValueCreateView):
     model = TemporaryProduct
     fields = ['name', 'price', 'text_color', 'background_color', 'is_food']
 
@@ -284,12 +284,12 @@ class TemporaryProductCreateView(ManagerRequiredMixin, CrispyFormMixin, FixedVal
         return self.model(event=event)
 
 
-class TemporaryProductUpdateView(ManagerRequiredMixin, EventOrganizerFilterMixin, CrispyFormMixin, UpdateView):
+class TemporaryProductUpdateView(TreasurerRequiredMixin, EventOrganizerFilterMixin, CrispyFormMixin, UpdateView):
     model = TemporaryProduct
     fields = ['name', 'price', 'text_color', 'background_color']
 
 
-class TemporaryProductDeleteView(ManagerRequiredMixin, EventOrganizerFilterMixin, CrispyFormMixin, DeleteView):
+class TemporaryProductDeleteView(TreasurerRequiredMixin, EventOrganizerFilterMixin, CrispyFormMixin, DeleteView):
     model = TemporaryProduct
     template_name = "billing/product_confirm_delete.html"
 
@@ -300,7 +300,7 @@ class TemporaryProductDeleteView(ManagerRequiredMixin, EventOrganizerFilterMixin
         return HttpResponseRedirect(self.object.event.get_absolute_url())
 
 
-class SellingPriceCreateView(ManagerRequiredMixin, OrganizationFormMixin, CrispyFormMixin, CreateView):
+class SellingPriceCreateView(TreasurerRequiredMixin, OrganizationFormMixin, CrispyFormMixin, CreateView):
     """
     Create view for selling prices.
 
@@ -330,20 +330,20 @@ class SellingPriceFilterMixin(object):
                                                                           productgroup__organization=organization)
 
 
-class SellingPriceUpdateView(ManagerRequiredMixin, SellingPriceFilterMixin, OrganizationFormMixin, CrispyFormMixin,
+class SellingPriceUpdateView(TreasurerRequiredMixin, SellingPriceFilterMixin, OrganizationFormMixin, CrispyFormMixin,
                              UpdateView):
     model = SellingPrice
     form_class = SellingPriceForm
 
 
-class SellingPriceDeleteView(ManagerRequiredMixin, SellingPriceFilterMixin, DeleteView):
+class SellingPriceDeleteView(TreasurerRequiredMixin, SellingPriceFilterMixin, DeleteView):
     model = SellingPrice
 
     def get_success_url(self):
         return self.object.pricegroup.get_absolute_url()
 
 
-class SellingPriceMatrixView(ManagerRequiredMixin, TemplateView):
+class SellingPriceMatrixView(TreasurerRequiredMixin, TemplateView):
     """
     Price matrix view.
 
