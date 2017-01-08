@@ -106,7 +106,16 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <h3>{% trans 'Orders' %}</h3>
+        <div>
+            <div class="pull-right">
+                <a class="btn btn-primary" href="{% url 'event-orders-add' event.pk %}">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    {% trans 'Add' %}
+                </a>
+            </div>
+            <h3>{% trans 'Orders' %}</h3>
+        </div>
+
         <div class="table-responsive">
             <table class="table">
                 <thead>

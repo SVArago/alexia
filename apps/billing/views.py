@@ -8,11 +8,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormView
 from django.views.generic.list import ListView
 
 from apps.billing.forms import (
-    FilterEventForm, PermanentProductForm, SellingPriceForm,
+    FilterEventForm, PermanentProductForm, SellingPriceForm, CreateOrderFormSet
 )
 from apps.billing.models import (
     PermanentProduct, PriceGroup, Product, ProductGroup, SellingPrice,
@@ -89,6 +89,47 @@ def order_show(request, pk):
     order_sum = orders.aggregate(Sum('amount'))['amount__sum']
 
     return render(request, "order/show.html", locals())
+
+
+class OrderCreateView(FormView, TreasurerRequiredMixin):
+    template_name = 'billing/order_create_form.html'
+    form_class = CreateOrderFormSet
+
+    def get_event(self):
+        event = get_object_or_404(Event, pk=self.kwargs['event_pk'])
+        if event.organizer != self.request.organization:
+            raise PermissionDenied
+        return event
+
+    def get_context_data(self, **kwargs):
+        kwargs['event'] = self.get_event()
+        return super(OrderCreateView, self).get_context_data(**kwargs)
+
+    def get_success_url(self):
+        return reverse(order_show, kwargs={'pk': self.get_event().id})
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(OrderCreateView, self).get_form_kwargs()
+        kwargs['form_kwargs'] = {'event': self.get_event()}
+        return kwargs
+
+    def form_valid(self, formset):
+        event = self.get_event()
+        for form in formset:
+            if len(form.cleaned_data) == 0:
+                continue
+
+            price = form.cleaned_data['amount'] * form.cleaned_data['product'].get_price(event)
+
+            order = Order.objects.create(event=event, authorization=form.cleaned_data['authorization'],
+                                         added_by=self.request.user)
+            Purchase.objects.create(order=order, product=form.cleaned_data['product'],
+                                    amount=form.cleaned_data['amount'], price=price)
+            # We need to save the order again, as Order.save() calculates the order amount, so it has been set to
+            # zero in the create() call. Yes, this is retarded behaviour but I don't dare to change it yet.
+            order.save()
+
+        return super(OrderCreateView, self).form_valid(formset)
 
 
 @login_required

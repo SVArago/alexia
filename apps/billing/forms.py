@@ -2,11 +2,14 @@ import calendar
 import datetime
 
 from django import forms
+from django.db.models.functions import Coalesce
+from django.db.models.functions import Lower
+from django.forms import formset_factory
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from apps.billing.models import (
-    PermanentProduct, PriceGroup, ProductGroup, SellingPrice,
+    PermanentProduct, PriceGroup, ProductGroup, SellingPrice, Authorization
 )
 from utils.forms import AlexiaForm, _default_crispy_helper
 
@@ -47,3 +50,27 @@ class FilterEventForm(AlexiaForm):
         label=_('Till time'),
         initial=datetime.datetime(now.year, now.month, last_day, 23, 59, 59),
     )
+
+
+class CreateOrderForm(AlexiaForm):
+    authorization = forms.ModelChoiceField(queryset=Authorization.objects)
+    product = forms.ModelChoiceField(queryset=PermanentProduct.objects)
+    amount = forms.IntegerField()
+
+    def __init__(self, event, *args, **kwargs):
+        super(CreateOrderForm, self).__init__(*args, **kwargs)
+
+        self.fields['authorization'].queryset = Authorization.objects.select_related('user') \
+            .filter(organization=event.organizer, end_date__isnull=True) \
+            .order_by(Coalesce('user__profile__is_external_entity', False).desc(), Lower('user__first_name').asc(), 'user__last_name')
+        self.fields['authorization'].label_from_instance = lambda a: a.user.get_full_name()
+
+        self.fields['product'].queryset = PermanentProduct.objects.filter(
+            deleted=False,
+            organization=event.organizer,
+            productgroup__sellingprice__pricegroup=event.pricegroup,
+            productgroup__sellingprice__isnull=False
+        )
+
+
+CreateOrderFormSet = formset_factory(CreateOrderForm, extra=20, can_delete=False)
