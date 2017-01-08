@@ -84,7 +84,7 @@ def order_show(request, pk):
     if internal_revenue is None:
         internal_revenue = 0
 
-    orders = event.orders.select_related('authorization__user').order_by('-placed_at')
+    orders = event.orders.select_related('authorization__user').prefetch_related('purchases', 'purchases__product').order_by('-placed_at')
     order_count = len(orders)  # efficientie: len() ipv count()
     order_sum = orders.aggregate(Sum('amount'))['amount__sum']
 

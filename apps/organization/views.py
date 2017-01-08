@@ -18,7 +18,7 @@ from .models import AuthenticationData, Membership, Profile
 @login_required
 @manager_required
 def membership_list(request):
-    memberships = request.organization.membership_set.select_related('user').order_by('user__first_name')
+    memberships = request.organization.membership_set.select_related('user', 'user__profile', 'user__certificate').order_by('user__first_name')
     return render(request, 'membership/list.html', locals())
 
 
