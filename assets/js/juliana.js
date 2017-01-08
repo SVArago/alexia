@@ -4,26 +4,6 @@
  * supporting Alexia
  */
 
-// src:http://phpjs.org/functions/date/
-_pad = function (n, c) {
-    n = n.toString();
-    return n.length < c ? _pad('0' + n, c, '0') : n;
-};
-
-/*
- * LOG - logger status
- */
-Log = {
-    log: function (text) {
-        var d = new Date();
-        var h = d.getHours();
-        var m = d.getMinutes();
-        if (h < 10) h = '0' + h;
-        if (m < 10) m = '0' + m;
-        $('#log-table').append('<tr><td width="20%">[' + h + ':' + m + ']</td><td>' + text + '</td></li>');
-    }
-};
-
 State = {
     SALES: 0,
     PAYING: 1,
@@ -32,18 +12,17 @@ State = {
     MESSAGE: 4,
 
     current: this.SALES,
+    isLoading: false,
+
     toggleTo: function (newState, argument) {
+        this.clearLoading();
         switch (newState) {
             case this.SALES:
                 console.log('Changing to SALES...');
                 this.current = this.SALES;
+                this._hideAllScreens();
 
                 clearInterval(Receipt.counterInterval);
-                Receipt.clear();
-                $('#payment-receipt').html('');
-                $('#countdownbox').show();
-
-                this._hideAllScreens();
                 $('#cashier-screen').show();
                 break;
             case this.CHECK:
@@ -55,28 +34,14 @@ State = {
                 this.current = this.PAYING;
                 this._hideAllScreens();
 
-                var receipt = Receipt.receipt;
-                var receiptHTML = '';
-                var total = 0;
-                for (var i = 0; i < receipt.length; i++) {
-                    receiptHTML += '<tr>';
-                    receiptHTML += '<td>' + Settings.products[receipt[i].product].name + '</td>';
-                    receiptHTML += '<td>' + receipt[i].amount + '</td>';
-                    receiptHTML += '<td>&euro;' + (receipt[i].price / 100).toFixed(2) + '</td>';
-                    receiptHTML += '</tr>';
-                    total += receipt[i].price;
-                }
-                receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + (total / 100).toFixed(2) + '</strong></td></tr>';
-                $('#payment-receipt').html(receiptHTML);
-
                 $('#rfid-screen').show();
                 break;
             case this.ERROR:
+                console.log('Changing to ERROR...');
                 this.current = this.ERROR;
                 this._hideAllScreens();
 
                 $('#current-error').html(argument);
-
                 $('#error-screen').show();
                 break;
             case this.MESSAGE:
@@ -88,12 +53,16 @@ State = {
                 $('#message-screen').show();
                 break;
             default:
-                console.log('Error: no known state');
+                console.log('Error: switching to unknown state');
                 break;
         }
-        $('.btn').attr('draggable', false).on('dragstart', function () {
-            return false;
-        });
+    },
+
+    setLoading: function () {
+        this.isLoading = true;
+    },
+    clearLoading: function () {
+        this.isLoading = false;
     },
 
     _hideAllScreens: function () {
@@ -131,10 +100,11 @@ Scanner = {
             var rfid = JSON.parse(event.data);
             scanner.action(rfid);
         };
-
     },
     action: function (rfid) {
-        console.log('CurrentState: ' + State.current);
+        if (State.isLoading)
+            return;
+
         if (State.current === State.SALES) {
             if (Receipt.receipt.length > 0) {
                 Receipt.pay(rfid);
@@ -164,7 +134,7 @@ Display = {
 };
 
 /*
- * RECEIPT - left panel
+ * RECEIPT - right panel
  */
 Receipt = {
     receipt: [],
@@ -177,95 +147,100 @@ Receipt = {
             return;
         }
 
-        //Try to update the quantity of an old receipt entry
+        // Try to update the quantity of an old receipt entry if possible, else
+        // add product to the receipt
         var foundProduct = false;
         for (var i in this.receipt) {
-            if (this.receipt[i].product==product) {
+            if (this.receipt[i].product == product) {
                 this.receipt[i].amount += quantity;
                 this.receipt[i].price += quantity * Settings.products[product].price;
                 foundProduct = true;
+                break;
             }
         }
-        if (!foundProduct) {
-            //add product to actual receipt
+
+        if (!foundProduct)
             this.receipt.push({
                 'product': product,
                 'amount': quantity,
                 'price': quantity * Settings.products[product].price
             });
-        }
 
-        this.updateTotalAmount();
-        this.updateReceipt(product);
-
+        this.updateShownReceipt(product);
         Display.set('OK');
     },
-    updateReceipt: function(flash) {
+    remove: function (index) {
+        this.receipt.splice(index, 1);
+        this.updateShownReceipt();
+    },
+    clear: function () {
+        this.receipt = [];
+        this.updateShownReceipt();
+    },
+    getTotal: function () {
+        var sum = 0;
+        for (var i in this.receipt) {
+            if (this.receipt[i] === undefined)
+                continue;
+
+            sum += this.receipt[i].price;
+        }
+
+        return (sum / 100).toFixed(2);
+    },
+    updateShownReceipt: function(flashProduct) {
         $('#receipt-table').empty();
         for (var i in this.receipt) {
-            if (this.receipt[i]===undefined) continue;
+            if (this.receipt[i]===undefined)
+                continue;
 
             var product = this.receipt[i].product;
             var quantity = this.receipt[i].amount;
-            var desc = $('.tab-sale a[data-product="' + product + '"]').text();
-            if (quantity !== 1) desc += ' &times; ' + quantity;
+            var price = (this.receipt[i].price / 100).toFixed(2);
+            var desc = Settings.products[product].name;
+            if (quantity !== 1)
+                desc += ' &times; ' + quantity;
 
-            var price = ((quantity * Settings.products[product].price) / 100).toFixed(2);
-
-            var doFlash = (flash!==undefined && flash==product)?' class="flash"':'';
-
+            var doFlash = (flashProduct!==undefined && flashProduct==product)?' class="flash"':'';
             $('#receipt-table').append('<tr' + doFlash + ' data-pid="' + i + '"><td width="75%"><a onclick="Receipt.remove($(this).data(\'pid\'));" class="btn btn-danger command" href="#" data-pid="' + i + '">X</a><span>' + desc + '</span></td><td>€' + price + '</td></tr>');
         }
+
+        $('#receipt-total').find('input').val('€ ' + this.getTotal());
     },
-    remove: function (index) {
-        //remove product from actual receipt
-        this.receipt.splice(index, 1);
-        this.updateTotalAmount();
-        this.updateReceipt();
-    },
-    updateTotalAmount: function () {
-        // generate total
-        var sum = 0;
-        for (var i = 0; i < this.receipt.length; i++) {
-            if (this.receipt[i]) {
-                sum += this.receipt[i].amount * Settings.products[this.receipt[i].product].price;
-            }
+    buildPaymentReceipt: function (user) {
+        var receiptHTML = '';
+        for (var i = 0; i < Receipt.receipt.length; i++) {
+            receiptHTML += '<tr>';
+            receiptHTML += '<td>' + Settings.products[this.receipt[i].product].name + '</td>';
+            receiptHTML += '<td>' + this.receipt[i].amount + ' &times;</td>';
+            receiptHTML += '<td>&euro;' + (this.receipt[i].price / 100).toFixed(2) + '</td>';
+            receiptHTML += '</tr>';
         }
-        var amount = (sum / 100).toFixed(2);
-        $('#receipt-total').find('input').val('' + amount);
-        return sum;
-    },
-    addText: function (text, quantity) {
-        $('#receipt-table').append('<tr><td width="70%">' + text + '</td><td>' + quantity + '</td></tr>');
-        Display.set('OK');
-    },
-    clear: function () {
-        $('#receipt-table').empty();
-        this.receipt = [];
-        this.updateTotalAmount();
+
+        receiptHTML += '<tr class="active"><td><strong>Totaal:</strong></td><td></td><td><strong>&euro;' + this.getTotal() + '</strong></td></tr>';
+
+        $('#payment-receipt').html(receiptHTML);
+        $('#payment-name').text(user.first_name);
     },
     pay: function (rfid) {
-        State.toggleTo(State.PAYING);
-
-        console.log('Card scanned. Retrieving userData for: ' + rfid);
+        console.log('Card scanned, retrieving data');
+        State.setLoading();
         User.retrieveData(rfid, function (result) {
             Receipt.continuePay(result, rfid);
         });
-
     },
     continuePay: function (userData, rfid) {
-        console.log('continuePay was called: ');
-        console.log(userData);
+        console.log('continuePay was called');
         if (!userData) {
             State.toggleTo(State.ERROR, 'RFID card retrieval failed');
         } else if (userData.error) {
             State.toggleTo(State.ERROR, 'Error authenticating: ' + userData.error.message);
         } else {
             console.log('Userdata received correctly.');
-            Receipt.payForUser(userData.result.user.id, rfid);
+            Receipt.payForUser(userData.result.user, rfid);
         }
     },
-    payForUser: function (userId, rfid) {
+    payForUser: function (user, rfid) {
         if (Receipt.receipt.length == 0) {
             console.log('Info: receipt empty');
             Display.set('Please select products!');
@@ -273,12 +248,13 @@ Receipt = {
         }
 
         console.log('Starting pay countdown');
+        Receipt.buildPaymentReceipt(user);
         if (State.current != State.PAYING)
             State.toggleTo(State.PAYING);
 
         Receipt.payData = {
             event_id: Settings.event_id,
-            user_id: userId,
+            user_id: user.id,
             purchases: Receipt.receipt,
             rfid_data: rfid
         };
@@ -294,6 +270,10 @@ Receipt = {
         }, 1000);
     },
     payNow: function () {
+        if (State.isLoading)
+            return;
+        State.setLoading();
+
         console.log('Processing payment now.');
         var rpcRequest = {
             jsonrpc: '2.0',
@@ -303,21 +283,19 @@ Receipt = {
         };
 
         clearInterval(Receipt.counterInterval);
-        Receipt.confirmPay(rpcRequest);
 
-    },
-    confirmPay: function (rpcRequest) {
         IAjax.request(rpcRequest, function (result) {
             if (result.error) {
                 State.toggleTo(State.ERROR, 'Error with payment: ' + result.error);
             } else {
+                Receipt.clear();
                 State.toggleTo(State.SALES);
             }
         });
     },
     cash: function () {
         console.log('Paying cash');
-        var sum = Receipt.updateTotalAmount();
+        var sum = Receipt.getTotal();
         var amount = Math.ceil(sum / 10) * 10;
         State.toggleTo(State.MESSAGE, 'Dat wordt dan &euro; ' + (amount/100).toFixed(2));
     }
@@ -328,7 +306,6 @@ Receipt = {
  */
 Input = {
     prompt: '',
-    latch_command: '',
     stroke: function (input) {
         // must be a string
         if (typeof input !== 'string') return;
@@ -342,31 +319,8 @@ Input = {
         // parse the input as integer and pass it on
         return parseInt(this.prompt);
     },
-    isEmpty: function () {
-        return this.prompt == '';
-    },
     reset: function () {
-        if (this.latch_command !== '') {
-            eval(this.latch_command);
-            this.latch_command = '';
-        }
-
         this.prompt = '';
-    },
-    latch: function (command) {
-        this.latch_command = command;
-    }
-};
-
-/*
- * SALES - individual sales, beverages not paid with a "borrelkaart"
- */
-Sales = {
-    add: function (product, quantity) {
-        // add item to receipt
-        quantity = !quantity ? 1 : quantity;
-
-        Receipt.add(product, quantity);
     }
 };
 
@@ -388,6 +342,7 @@ User = {
     },
     check: function (rfid) {
         console.log('Card scanned. Retrieving userData for: ' + rfid);
+        State.setLoading();
         User.retrieveData(rfid, function (data) {
             Display.set('?');
             User.continueCheck(data.result.user);
@@ -434,8 +389,11 @@ IAjax = {
 
 $(function () {
     Scanner.init();
-
     State.toggleTo(State.SALES);
+
+    $('.btn').attr('draggable', false).on('dragstart', function () {
+        return false;
+    });
 
     $('.btn-keypad').click(function () {
         Input.stroke($(this).html());
@@ -447,19 +405,20 @@ $(function () {
     });
 
     $('.command').click(function () {
-        var reset = true;
-
         switch ($(this).data('command')) {
             case 'clear':
                 Display.set('?');
                 break;
             case 'sales':
-                Sales.add($(this).data('product'), Input.read());
+                var count = !Input.read() ? 1 : Input.read();
+                Receipt.add($(this).data('product'), count);
                 break;
-            case 'cancel':
+            case 'cancelPayment':
+                Receipt.clear();
+                // Fall-through on purpose here
+            case 'cancelError':
                 Display.set('?');
                 State.toggleTo(State.SALES);
-                Receipt.clear();
                 break;
             case 'check':
                 State.toggleTo(State.CHECK);
@@ -468,14 +427,12 @@ $(function () {
             case 'cash':
                 Receipt.cash();
                 break;
-            case 'cancelPayment':
-                State.toggleTo(State.SALES);
-                break;
             case 'payNow':
                 Receipt.payNow();
                 break;
             case 'payUser':
-                Receipt.payForUser($(this).data('user'), null);
+                var user = { id: $(this).data('user-id'), first_name: $(this).data('user-first-name'), last_name: $(this).data('user-last-name') };
+                Receipt.payForUser(user, null);
                 break;
             case 'ok':
                 State.toggleTo(State.SALES);
@@ -486,6 +443,6 @@ $(function () {
                 break;
         }
 
-        if (reset) Input.reset();
+        Input.reset();
     });
 });
