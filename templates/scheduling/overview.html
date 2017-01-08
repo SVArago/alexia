@@ -4,19 +4,18 @@
 {% block title %}{% trans 'Planning' %}{% endblock %}
 
 {% block content %}
-<div class="page-header clearfix">
-    <h1 class="pull-left">
+<div class="page-header">
+    {% if is_planner %}
+    <a href="{% url 'new-event' %}" class="btn btn-primary pull-right">
+        <span class="glyphicon glyphicon-plus"></span>
+        {% trans 'Add event' %}
+    </a>
+    {% endif %}
+    <h1>
         {% trans 'Planning' %}
     </h1>
-    {% if is_planner %}
-    <div class="text-right">
-        <a href="{% url 'new-event' %}" class="btn btn-primary pull-right">
-            <span class="glyphicon glyphicon-plus"></span>
-            {% trans 'Add event' %}
-        </a>
-    </div>
-    {% endif %}
 </div>
+
 <div class="panel-group" id="filters">
     <div class="panel panel-default">
         <div class="panel-heading">
