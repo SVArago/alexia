@@ -24,7 +24,7 @@
         <tbody>
             {% for t in tenders %}
             <tr>
-                <td><a href="{% url 'apps.organization.views.membership_show' t.tender.id %}">{{ t.tender.user.get_full_name }}</a></td>
+                <td><a href="{% url 'membership' t.tender.id %}">{{ t.tender.user.get_full_name }}</a></td>
                 <td>{{ t.tended }}</td>
                 <td>
                     <span {% if t.last_tended %}title="{{ t.last_tended }}"{% endif %}>
