@@ -142,7 +142,7 @@ class ConsumptionFormListView(ListView):
     def get_queryset(self):
         profile = self.request.user.profile
 
-        if profile.is_foundation_manager:
+        if profile.is_foundation_manager or request.user.is_superuser:
             qs = ConsumptionForm.objects.all()
         elif profile.is_manager(self.request.organization):
             qs = ConsumptionForm.objects.filter(event__organizer=self.request.organization)
@@ -158,7 +158,7 @@ class ConsumptionFormDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if not request.user.profile.is_foundation_manager \
+        if not request.user.is_superuser and not request.user.profile.is_foundation_manager \
                 and not request.user.profile.is_manager(self.object.event.organizer):
             raise PermissionDenied
 
@@ -172,7 +172,7 @@ class ConsumptionFormPDFView(PDFTemplateView):
     def get(self, request, *args, **kwargs):
         self.object = get_object_or_404(ConsumptionForm, pk=kwargs['pk'])
 
-        if not request.user.profile.is_foundation_manager \
+        if not request.user.is_superuser and not request.user.profile.is_foundation_manager \
                 and not request.user.profile.is_manager(self.object.event.organizer):
             raise PermissionDenied
 
