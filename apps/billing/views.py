@@ -4,7 +4,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
 from django.db.models.functions import ExtractYear, ExtractMonth
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -190,6 +190,8 @@ def stats_year(request, year):
 @treasurer_required
 def stats_month(request, year, month):
     month = int(month)
+    if month not in range(1, 12):
+        raise Http404
     events = Event.objects.filter(
         organizer=request.organization,
         starts_at__year=year,
