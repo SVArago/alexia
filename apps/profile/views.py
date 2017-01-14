@@ -90,7 +90,7 @@ def iva(request):
                 certificate.delete()
             # Save the new
             certificate = form.save(commit=False)
-            certificate._id = str(request.user.pk)
+            certificate.owner = request.user
             certificate.save()
             # Attach to profile
             request.user.certificate = certificate
