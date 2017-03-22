@@ -131,6 +131,27 @@ class OrderCreateView(FormView, TreasurerRequiredMixin):
         return super(OrderCreateView, self).form_valid(formset)
 
 
+class OrderDeleteView(TreasurerRequiredMixin, OrganizationFormMixin, CrispyFormMixin, DeleteView):
+    model = Order
+    template_name = "billing/order_confirm_delete.html"
+
+    def get_queryset(self):
+        return super(OrderDeleteView, self).get_queryset().filter(synchronized=False, event__organizer=self.request.organization)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        for purchase in self.object.purchases.all():
+            purchase.delete()
+        self.object.delete()
+
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse('event-orders', args=[self.object.event.id])
+
+
 @login_required
 @treasurer_required
 def order_export(request):
@@ -166,11 +187,14 @@ def payment_show(request, pk):
     # bekijk als: * dit mijn transactie is
     #             * ik penningmeester van de organisatie in kwestie ben
     #             * ik superuser ben
+    is_treasurer = request.user.is_superuser or (
+        request.organization and
+        request.organization == order.authorization.organization and
+        request.user.profile.is_treasurer(request.organization)
+    )
     if (order.authorization.user == request.user) \
             or request.user.is_superuser \
-            or (request.organization and
-                request.organization == order.authorization.organization and
-                request.user.profile.is_treasurer(request.organization)):
+            or is_treasurer:
         return render(request, 'payment/show.html', locals())
 
     raise PermissionDenied
