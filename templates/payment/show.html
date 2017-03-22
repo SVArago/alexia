@@ -29,6 +29,22 @@
                 <th>{% trans 'Price' %}</th>
                 <td>&euro; {{ order.amount|floatformat:2 }}</td>
             </tr>
+            <tr>
+                <th>{% trans 'Synchronized' %}</th>
+                <td>
+                    {% if order.synchronized %}
+                        <i class="icon-alexia-ok"></i>
+                    {% else %}
+                        <i class="icon-alexia-notok"></i>
+                        {% if is_treasurer %}
+                        <a class="btn btn-xs btn-danger" href="{% url 'delete-order' order.pk %}">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            {% trans 'Delete' %}
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
         </table>
     </div>
     <div class="col-xs-12 col-sm-6">

@@ -140,7 +140,17 @@
                             {% endfor %}
                         </td>
                         <td>{{ o.placed_at }}</td>
-                        <td>{% if o.synchronized %}<i class="icon-alexia-ok"></li>{% else %}<i class="icon-alexia-notok">{% endif %}</td>
+                        <td>
+                            {% if o.synchronized %}
+                                <i class="icon-alexia-ok"></i>
+                            {% else %}
+                                <i class="icon-alexia-notok"></i>
+                                <a class="btn btn-xs btn-danger" href="{% url 'delete-order' o.pk %}">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    {% trans 'Delete' %}
+                                </a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

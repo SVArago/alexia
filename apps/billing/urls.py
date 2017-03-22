@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^stats/([0-9]{4})/$', views.stats_year, name='year-orders'),
     url(r'^stats/([0-9]{4})/([0-9]{1,2})/$', views.stats_month, name='month-orders'),
     url(r'^payment/(?P<pk>\d+)/$', views.payment_show, name='order'),
+    url(r'^payment/(?P<pk>\d+)/delete/$', views.OrderDeleteView.as_view(), name='delete-order'),
 
     url(r'^pricegroup/$', views.PriceGroupListView.as_view(), name='pricegroup_list'),
     url(r'^pricegroup/create/$', views.PriceGroupCreateView.as_view(), name='pricegroup_create'),
