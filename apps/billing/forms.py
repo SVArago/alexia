@@ -2,6 +2,7 @@ import calendar
 import datetime
 
 from django import forms
+from django.db.models import Q
 from django.db.models.functions import Coalesce
 from django.db.models.functions import Lower
 from django.forms import formset_factory
@@ -9,8 +10,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from apps.billing.models import (
-    PermanentProduct, PriceGroup, ProductGroup, SellingPrice, Authorization
-)
+    PermanentProduct, PriceGroup, ProductGroup, SellingPrice, Authorization,
+    Product)
 from utils.forms import AlexiaForm, _default_crispy_helper
 
 
@@ -61,7 +62,7 @@ class FilterEventForm(AlexiaForm):
 
 class CreateOrderForm(AlexiaForm):
     authorization = forms.ModelChoiceField(queryset=Authorization.objects)
-    product = forms.ModelChoiceField(queryset=PermanentProduct.objects)
+    product = forms.ModelChoiceField(queryset=Product.objects)
     amount = forms.IntegerField()
 
     def __init__(self, event, *args, **kwargs):
@@ -72,12 +73,13 @@ class CreateOrderForm(AlexiaForm):
             .order_by(Coalesce('user__profile__is_external_entity', False).desc(), Lower('user__first_name').asc(), 'user__last_name')
         self.fields['authorization'].label_from_instance = lambda a: a.user.get_full_name()
 
-        self.fields['product'].queryset = PermanentProduct.objects.filter(
-            deleted=False,
-            organization=event.organizer,
-            productgroup__sellingprice__pricegroup=event.pricegroup,
-            productgroup__sellingprice__isnull=False
-        )
+        self.fields['product'].queryset = Product.objects.filter(
+            Q(deleted=False),
+            Q(permanentproduct__organization=event.organizer,
+              permanentproduct__productgroup__sellingprice__pricegroup=event.pricegroup,
+              permanentproduct__productgroup__sellingprice__isnull=False) |
+            Q(temporaryproduct__event=event)
+        ).order_by('name')
 
 
 CreateOrderFormSet = formset_factory(CreateOrderForm, extra=20, can_delete=False)
