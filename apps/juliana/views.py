@@ -45,7 +45,7 @@ def _get_onscreen_users(event):
         Q(authorizations__organization=event.organizer),
         Q(authorizations__start_date__lte=timezone.now()),
         Q(authorizations__end_date__isnull=True) | Q(authorizations__end_date__gte=timezone.now()),
-        (Q(membership__organization=event.organizer) & Q(membership__is_active=True)) | Q(profile__is_external_entity=True),
+        (Q(membership__organization=event.organizer) & (Q(membership__is_active=True) | Q(membership__onscreen_checkout=True))) | Q(profile__is_external_entity=True),
     ).order_by('-profile__is_external_entity', 'first_name')
     split_index = next((index for index, user in enumerate(onscreen_users) if not user.profile.is_external_entity), 0)
     return [onscreen_users[0:split_index], onscreen_users[split_index:]]

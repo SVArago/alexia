@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-08 20:34+0100\n"
+"POT-Creation-Date: 2017-08-15 15:59+0200\n"
 "PO-Revision-Date: 2016-08-08 20:51+0200\n"
 "Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
@@ -421,6 +421,9 @@ msgstr "mag financiën zien en beheren"
 
 msgid "is currently active"
 msgstr "is momenteel actief"
+
+msgid "visible in on-screen checkout"
+msgstr "zichtbaar in kassa"
 
 msgid "membership"
 msgstr "lidmaatschap"

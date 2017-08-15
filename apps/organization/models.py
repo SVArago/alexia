@@ -188,6 +188,7 @@ class Membership(models.Model):
     is_manager = models.BooleanField(_('may create and modify users'), default=False)
     is_treasurer = models.BooleanField(_('may see and manage finances'), default=False)
     is_active = models.BooleanField(_('is currently active'), default=True)
+    onscreen_checkout = models.BooleanField(_('visible in on-screen checkout'), default=True)
 
     class Meta:
         ordering = ('user', 'organization')
