@@ -19,9 +19,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for productgroup, sellingprices in productgroups %}
+            {% for productgroup, sellingprices, has_products in productgroups %}
+            {% if has_products %}
                 <tr>
-                    <th colspan="2"><a href="{{ productgroup.get_absolute_url }}">{{ productgroup }}</a></th>
+            {% else %}
+                <tr class="tr-muted">
+            {% endif %}
+                    <th colspan="2">
+                        <a href="{{ productgroup.get_absolute_url }}">{{ productgroup }}</a>
+                    </th>
                     {% for pricegroup, sellingprice in sellingprices %}
                         <td style="text-align: right">
                             {% if sellingprice %}

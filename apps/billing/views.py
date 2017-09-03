@@ -424,7 +424,8 @@ class SellingPriceMatrixView(TreasurerRequiredMixin, TemplateView):
 
         pricegroups = PriceGroup.objects.filter(organization=organization) \
             .prefetch_related('sellingprice_set', 'sellingprice_set__productgroup')
-        productgroups = ProductGroup.objects.filter(organization=organization)
+        productgroups = ProductGroup.objects.filter(organization=organization) \
+            .prefetch_related('permanentproduct_set')
 
         pricedata = dict([(pricegroup,
                            dict([(sellingprice.productgroup, sellingprice)
@@ -433,15 +434,16 @@ class SellingPriceMatrixView(TreasurerRequiredMixin, TemplateView):
         """ Dict pricegroup -> productgroup -> sellingprice """
 
         data = []
-        """ List of (productgroup, [(pricegroup, sellingprice), ...]) tuples """
+        """ List of (productgroup, [(pricegroup, sellingprice), ...], has_product) tuples """
 
         for productgroup in productgroups:
             data.append((productgroup,
                          [(pricegroup,
                            pricedata[pricegroup][productgroup] if productgroup in pricedata[pricegroup] else None)
-                          for pricegroup in pricegroups]
+                          for pricegroup in pricegroups],
+                         productgroup.permanentproduct_set.filter(deleted=False).count() > 0
                          ))
 
         context['pricegroups'] = pricegroups
-        context['productgroups'] = data
+        context['productgroups'] = sorted(data, key=lambda p: not p[2])
         return context
