@@ -18,7 +18,7 @@ from utils.forms import AlexiaForm, _default_crispy_helper
 class PermanentProductForm(forms.ModelForm):
     class Meta:
         model = PermanentProduct
-        fields = ['name', 'productgroup', 'position', 'text_color', 'background_color', 'is_food']
+        fields = ['name', 'productgroup', 'position', 'text_color', 'background_color', 'is_available', 'is_food']
 
     def __init__(self, organization, *args, **kwargs):
         super(forms.ModelForm, self).__init__(*args, **kwargs)

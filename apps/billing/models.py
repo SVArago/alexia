@@ -139,6 +139,7 @@ class PermanentProduct(Product):
         verbose_name=_('organization'),
     )
     position = models.IntegerField(_('position'))
+    is_available = models.BooleanField(verbose_name=_('Available'), default=True)
 
     objects = PermanentProductManager()
 

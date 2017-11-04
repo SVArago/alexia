@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-15 15:59+0200\n"
+"POT-Creation-Date: 2017-11-04 23:17+0100\n"
 "PO-Revision-Date: 2016-08-08 20:51+0200\n"
 "Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
@@ -778,6 +778,9 @@ msgstr "Naam"
 
 msgid "Product group"
 msgstr "Productgroep"
+
+msgid "Available"
+msgstr "Beschikbaar"
 
 msgid "Food"
 msgstr "Eten"

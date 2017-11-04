@@ -27,7 +27,7 @@
         </thead>
         <tbody>
         {% for object in object_list %}
-            <tr>
+            <tr {% if not object.is_available %}class="tr-muted"{% endif %}>
                 <td {% if object.background_color %}style="background-color: #{{ object.background_color }};"{% endif %}>
                     <a href="{{ object.get_absolute_url }}" {% if object.text_color %}style="color: #{{ object.text_color }};"{% endif %}>
                         {{ object.name }}

@@ -14,7 +14,7 @@ def _get_product_list(event):
     products = []
 
     for sellingprice in event.pricegroup.sellingprice_set.all():
-        for product in sellingprice.productgroup.permanentproduct_set.all():
+        for product in sellingprice.productgroup.permanentproduct_set.filter(is_available=True):
             products.append({
                 'id': product.pk,
                 'name': product.name,

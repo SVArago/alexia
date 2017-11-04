@@ -39,6 +39,10 @@
         <h3>{% trans 'Juliana settings' %}</h3>
         <table class="table table-bordered">
             <tr>
+                <th>{% trans 'Available' %}</th>
+                <td>{{ object.is_available|yesno }}</td>
+            </tr>
+            <tr>
                 <th>{% trans 'Position' %}</th>
                 <td>{{ object.position }}</td>
             </tr>
