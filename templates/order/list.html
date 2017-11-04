@@ -52,7 +52,7 @@
         <tbody>
         {% for e in events %}
             <tr>
-                <td>{{ e.starts_at|date:"l d F" }}</td>
+                <td>{{ e.starts_at|date:"l d F Y" }}</td>
                 <td><a href="{% url 'event-orders' e.pk %}">{{ e.name }}</a></td>
                 <td>{{ e.order_count }}</td>
                 <td>&euro; {{ e.revenue|floatformat:2 }}</td>
