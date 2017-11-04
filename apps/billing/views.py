@@ -245,6 +245,7 @@ class PriceGroupUpdateView(TreasurerRequiredMixin, OrganizationFilterMixin, Cris
 
 class ProductGroupListView(TreasurerRequiredMixin, OrganizationFilterMixin, ListView):
     model = ProductGroup
+    queryset = ProductGroup.objects.order_by('name')
 
 
 class ProductGroupDetailView(TreasurerRequiredMixin, OrganizationFilterMixin, DetailView):
