@@ -445,6 +445,8 @@ class SellingPriceMatrixView(TreasurerRequiredMixin, TemplateView):
                          productgroup.permanentproduct_set.filter(deleted=False).count() > 0
                          ))
 
+        # Order product groups in such that groups without any product are shown at the bottom,
+        # and the others in alphabetical order.
         context['pricegroups'] = pricegroups
-        context['productgroups'] = sorted(data, key=lambda p: not p[2])
+        context['productgroups'] = sorted(data, key=lambda p: (not p[2], p[0].name))
         return context
