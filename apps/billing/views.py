@@ -53,11 +53,13 @@ def order_list(request):
 
 
 @login_required
-@treasurer_required
 def order_show(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
     if request.organization != event.organizer:
+        raise PermissionDenied
+    if not request.user.is_superuser and not request.user.profile.is_treasurer(event.organizer) \
+            and not event.is_tender(request.user):
         raise PermissionDenied
 
     products = Purchase.objects.filter(order__event=event) \
@@ -90,13 +92,16 @@ def order_show(request, pk):
     return render(request, "order/show.html", locals())
 
 
-class OrderCreateView(FormView, TreasurerRequiredMixin):
+class OrderCreateView(FormView):
     template_name = 'billing/order_create_form.html'
     form_class = CreateOrderFormSet
 
     def get_event(self):
         event = get_object_or_404(Event, pk=self.kwargs['event_pk'])
         if event.organizer != self.request.organization:
+            raise PermissionDenied
+        if not self.request.user.is_superuser and not self.request.user.profile.is_treasurer(event.organizer) \
+                and not event.is_tender(self.request.user):
             raise PermissionDenied
         return event
 
@@ -131,15 +136,31 @@ class OrderCreateView(FormView, TreasurerRequiredMixin):
         return super(OrderCreateView, self).form_valid(formset)
 
 
-class OrderDeleteView(TreasurerRequiredMixin, OrganizationFormMixin, CrispyFormMixin, DeleteView):
+class OrderDeleteView(OrganizationFormMixin, CrispyFormMixin, DeleteView):
     model = Order
     template_name = "billing/order_confirm_delete.html"
 
     def get_queryset(self):
         return super(OrderDeleteView, self).get_queryset().filter(synchronized=False, event__organizer=self.request.organization)
 
+    def get(self, request, *args, **kwargs):
+        order = self.get_object()
+        if order.event.organizer != self.request.organization:
+            raise PermissionDenied
+        if not self.request.user.is_superuser and not self.request.user.profile.is_treasurer(order.event.organizer) \
+                and not order.event.is_tender(self.request.user):
+            raise PermissionDenied
+
+        return super(OrderDeleteView, self).get(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if self.object.event.organizer != self.request.organization:
+            raise PermissionDenied
+        if not self.request.user.is_superuser and not self.request.user.profile.is_treasurer(self.object.event.organizer) \
+                and not self.object.event.is_tender(self.request.user):
+            raise PermissionDenied
+
         success_url = self.get_success_url()
 
         for purchase in self.object.purchases.all():
