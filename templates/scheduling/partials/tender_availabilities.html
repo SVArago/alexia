@@ -8,6 +8,7 @@
             <a href="{% url 'edit-event-bartender-availability' pk=event.pk user_pk=a.user.pk %}">
                 <span title="{% trans 'Last tended' %}: {% if a.last_tended %}{{ a.last_tended.event.starts_at|date:"j b Y" }} - {{ a.last_tended.event.name }}{% else %}{% trans 'Never' %}{% endif %}" class="label label-{{ a.availability.css_class|default:'default' }}">{{ a.availability|default:_("Unknown") }}</span>
             </a>
+	    {% if a.comment %}<span class="bartender_availability_comment glyphicon glyphicon-comment" data-toggle="tooltip" data-placement="right" title="{{ a.comment }}"></span>{% endif %}
         </td>
     </tr>
     {% endfor %}
