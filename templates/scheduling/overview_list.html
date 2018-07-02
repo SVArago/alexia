@@ -82,10 +82,12 @@
                             <option value="{{ a.pk }}"{% for ba in bartender_availabilities %}{% if ba.event_id == e.pk and ba.availability_id == a.pk %} selected="selected"{% endif %}{% endfor %}>{{ a.name }}</option>
                         {% endfor %}
                     </select>
-            <span style="cursor: pointer" type="button" class="bartender_availability_comment" data-toggle="modal" data-target="#comment_modal" data-event-id="{{ e.pk }}"{% for ba in bartender_availabilities %}{%if ba.event_id == e.pk%} data-comment="{{ ba.comment }}">
-		    <span class="glyphicon glyphicon-comment" title="{{ ba.comment }}" data-toggle="tooltip" data-placement="top"></a>{% endif %}{% endfor %}
+	   {% for ba in bartender_availabilities %}{% if ba.event_id == e.pk %}
+	   <span class="bartender_availability_comment" id="{{ e.pk }}" data-toggle="modal" data-target="#comment_modal" data-event-id="{{ e.pk }}" data-comment="{{ ba.comment }}">
+	    	<span class="glyphicon glyphicon-comment" data-toggle="tooltip" title="{{ ba.comment }}" >
+	    	</span>
 	    </span>
-
+	    {% endif %}{% endfor %}
                     {% endif %}
                     {% endif %}
                 </td>
