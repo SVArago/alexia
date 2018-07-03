@@ -17,9 +17,4 @@ class Migration(migrations.Migration):
             name='comment',
             field=models.TextField(blank=True, default=''),
         ),
-        migrations.AlterField(
-            model_name='mailtemplate',
-            name='name',
-            field=models.CharField(choices=[('enrollopen', 'Enrollment open'), ('enrollclosed', 'Enrollment closed'), ('reminder', 'Reminder')], max_length=32, verbose_name='name'),
-        ),
     ]
