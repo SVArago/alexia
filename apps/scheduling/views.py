@@ -152,10 +152,14 @@ def event_show(request, pk):
             ba = bas[t.user]
             a = ba[0].availability if ba else None
             comment = ba[0].comment if ba else ''
+            try:
+                last_tended = t.tended()[0]
+            except IndexError:
+                last_tended = None
             t_info = {'user': t.user,
                       'availability': a,
                       'membership_id': t.pk,
-                      'last_tended': t.tended()[0] if len(t.tended()) > 0 else None,
+                      'last_tended': last_tended,
                       'comment': comment,
                       }
             if t.is_active:
