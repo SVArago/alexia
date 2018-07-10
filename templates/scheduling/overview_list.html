@@ -82,6 +82,12 @@
                             <option value="{{ a.pk }}"{% for ba in bartender_availabilities %}{% if ba.event_id == e.pk and ba.availability_id == a.pk %} selected="selected"{% endif %}{% endfor %}>{{ a.name }}</option>
                         {% endfor %}
                     </select>
+	   {% for ba in bartender_availabilities %}{% if ba.event_id == e.pk %}
+	   <span class="bartender_availability_comment" id="{{ e.pk }}" data-toggle="modal" data-target="#comment_modal" data-event-id="{{ e.pk }}" data-comment="{{ ba.comment }}">
+	    	<span class="glyphicon glyphicon-comment" data-toggle="tooltip" title="{{ ba.comment }}" >
+	    	</span>
+	    </span>
+	    {% endif %}{% endfor %}
                     {% endif %}
                     {% endif %}
                 </td>
@@ -106,13 +112,31 @@
         </tbody>
     </table>
 </div>
+<div class="modal fade" id="comment_modal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span></button>
+                <h4 class="modal-title">Comment</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% else %}
 <p id="no-events-message">
-	{% if end_time %}
-		{% blocktrans with from_time|date:"j F H:i" as s and end_time|date:"j F H:i" as e %}No events have been planned from {{ s }} until {{ e }}.{% endblocktrans %}
-	{% else %}
-		{% blocktrans with from_time|date:"j F H:i" as s %}No events have been planned after {{ s }}.{% endblocktrans %}
-	{% endif %}
+    {% if end_time %}
+        {% blocktrans with from_time|date:"j F H:i" as s and end_time|date:"j F H:i" as e %}No events have been planned from {{ s }} until {{ e }}.{% endblocktrans %}
+    {% else %}
+        {% blocktrans with from_time|date:"j F H:i" as s %}No events have been planned after {{ s }}.{% endblocktrans %}
+    {% endif %}
 </p>
 {% endif %}
 {% endblock overview %}

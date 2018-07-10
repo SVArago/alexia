@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.db.models.query import Prefetch
 from django.forms.models import ModelForm, modelformset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -109,7 +109,7 @@ def overview(request):
         availabilities = list(request.organization.availabilities.exclude(nature=Availability.ASSIGNED))
     # Net als onze BartenderAvailabilities
     bartender_availabilities = BartenderAvailability.objects.filter(
-        user_id=request.user.pk).values('event_id', 'availability_id')
+        user_id=request.user.pk).values('event_id', 'availability_id', 'comment')
 
     # Rechten opslaan
     is_planner = request.user.is_authenticated() and (
@@ -151,10 +151,12 @@ def event_show(request, pk):
         for t in tenders:
             ba = bas[t.user]
             a = ba[0].availability if ba else None
+            comment = ba[0].comment if ba else ''
             t_info = {'user': t.user,
                       'availability': a,
                       'membership_id': t.pk,
-                      'last_tended': t.tended()[0] if len(t.tended()) > 0 else None
+                      'last_tended': t.tended()[0] if len(t.tended()) > 0 else None,
+                      'comment': comment,
                       }
             if t.is_active:
                 active_availabilities.append(t_info)
@@ -309,6 +311,42 @@ def set_bartender_availability(request):
     else:
         # TODO Better error message and HTTP status code [JZ]
         return HttpResponse("NOTOK")
+
+@login_required
+def set_bartender_availability_comment(request):
+    event = get_object_or_404(Event, pk=request.POST.get('event_id'))
+    comment = request.POST.get('comment', '')
+    if (request.organization not in event.participants.all()) or \
+            not request.user.profile.is_tender(request.organization) or \
+            event.is_closed:
+        raise PermissionDenied
+
+    # Can't add comment if already assigned
+    if event.organizer.assigns_tenders and \
+            not request.user.is_superuser and \
+            not request.user.profile.is_planner(event.organizer) and \
+            request.user in event.get_assigned_bartenders():
+        raise PermissionDenied
+
+    if request.method == 'POST' and request.is_ajax():
+        bartender_availability, is_new_record = \
+            BartenderAvailability.objects.get_or_create(
+                user=request.user, event=event,
+                defaults={'comment': comment})
+        if not is_new_record:
+            old_comment = bartender_availability.comment
+            bartender_availability.comment = comment
+            bartender_availability.save()
+            log.availability_comment_changed(
+                request.user, event, request.user, old_comment,
+                comment)
+        else:
+            log.availability_created(
+                request.user, event, request.user, bartender_availability.availability)
+        return HttpResponse()
+    else:
+        return HttpResponseNotAllowed(['POST'])
+         
 
 
 def edit_standardreservations(request):

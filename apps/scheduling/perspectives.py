@@ -44,11 +44,11 @@ def matrix(request):
 
     tenders = []
     for tender in tenders_list:
-        tender_availabilities = [
-            next((a.availability for a in e.bartender_availabilities.all() if a.user == tender.user), None) for e in
+        tender_availabilities_comments = [
+            next(((a.availability, a.comment) for a in e.bartender_availabilities.all() if a.user == tender.user), (None, None)) for e in
             events]
-        tender_events = [{'event': event, 'availability': availability} for event, availability in
-                         zip(events, tender_availabilities)]
+        tender_events = [{'event': event, 'availability': availability, 'comment': comment} for event, availability, comment in
+                         zip(events, *zip(*tender_availabilities_comments))]
         tended = [a.event for a in tender.tended() if a.event.starts_at < timezone.now()]
         tenders.append({
             'tender': tender,

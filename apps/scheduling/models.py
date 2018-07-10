@@ -277,7 +277,8 @@ class BartenderAvailability(models.Model):
         related_name='bartender_availability_set',
     )
     event = models.ForeignKey(Event, verbose_name=_("event"), related_name='bartender_availabilities')
-    availability = models.ForeignKey(Availability, verbose_name=_("availability"))
+    availability = models.ForeignKey(Availability, verbose_name=_("availability"), null=True)
+    comment = models.TextField(blank=True, default='')
 
     class Meta:
         verbose_name = _("bartender availability")

@@ -44,6 +44,13 @@ body {
     width: auto;
     padding-top: 0;
     padding-bottom: 0;
+    display: inline;
+}
+
+.bartender_availability_comment {
+    margin-left: 8px;
+    margin-right: 8px;
+    color: #bebebe;
 }
 
 .input-static {

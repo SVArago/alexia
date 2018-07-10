@@ -29,6 +29,14 @@ def availability_changed(user, event, bartender, old_availability, new_availabil
         "new_availability": new_availability.__str__(),
     })
 
+def availability_comment_changed(user, event, bartender, old_comment, new_comment):
+    log(user, 'MODIFIED_COMMENT', {
+        "pk": event.pk,
+        "bartender": bartender.get_full_name(),
+        "old_comment": old_comment,
+        "new_comment": new_comment,
+    })
+
 
 def _roles(membership):
     roles = []

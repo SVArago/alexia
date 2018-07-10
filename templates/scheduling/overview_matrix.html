@@ -36,6 +36,7 @@
                     <a href="{% url 'edit-event-bartender-availability' pk=e.event.pk user_pk=t.tender.user.pk %}">
                         <span class="label label-{{ e.availability.css_class|default:'default' }}">{{ e.availability|default:_("Unknown") }}</span>
                     </a>
+	    {% if e.comment %}<span class="bartender_availability_comment glyphicon glyphicon-comment" data-toggle="tooltip" data-placement="right" title="{{ e.comment }}"></span>{% endif %}
                 </td>
                 {% endfor %}
             </tr>
