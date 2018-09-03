@@ -75,6 +75,7 @@ class Profile(models.Model):
         ),
     )
     is_external_entity = models.BooleanField(_('is external entity'), default=False)
+    birthdate = models.DateField(_('birth date'), null=True)
     current_organization = models.ForeignKey(
         'Organization',
         models.SET_NULL,
