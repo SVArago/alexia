@@ -220,3 +220,14 @@ body {
 #message-screen {
 	padding-top: 130px;
 }
+
+
+/* Underage screen */
+#underage-screen .jumbotron {
+    background-color: #dc3545;
+    color: white;
+}
+
+#underage-screen .jumbotron p {
+    font-weight: 300;
+}

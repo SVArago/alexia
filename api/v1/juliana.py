@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Sum, Q
@@ -11,6 +12,7 @@ from apps.billing.models import Order, Purchase, RfidCard, Authorization, Produc
 from apps.scheduling.models import Event
 from .common import api_v1_site, format_authorization
 from .exceptions import ForbiddenError
+from utils.dates import age
 
 
 def _get_validate_event(request, event_id):
@@ -48,12 +50,14 @@ def _retrieve_rfidcard(rfid_data):
     rfid = _preprocess_rfiddata(rfid_data)
 
     try:
-        return RfidCard.objects.get(
-            (Q(atqa=rfid['atqa']) | Q(atqa="")) &
-            (Q(sak=rfid['sak']) | Q(sak="")) &
-            Q(uid=rfid['uid']) &
-            Q(is_active=True)
-         )
+        return RfidCard.objects \
+            .select_related('user', 'user__profile') \
+            .get(
+                (Q(atqa=rfid['atqa']) | Q(atqa="")) &
+                (Q(sak=rfid['sak']) | Q(sak="")) &
+                Q(uid=rfid['uid']) &
+                Q(is_active=True)
+            )
     except RfidCard.DoesNotExist:
         raise InvalidParamsError(_('RFID-card %(uid)s not registered in Alexia.') % {'uid': rfid['uid']})
 
@@ -69,17 +73,21 @@ def juliana_rfid_get(request, event_id, rfid):
         raise InvalidParamsError(_('User %(user)s has no authorization at organization %(organization)s.') %
                                  {'user': user.get_full_name(), 'organization': event.organizer})
 
-    res = {
+    if user.profile and user.profile.birthdate:
+        alcohol_permitted = age(user.profile.birthdate) >= settings.JULIANA_ALCOHOL_AGE
+    else:
+        alcohol_permitted = None
+
+    return {
         'user': {
             'id': user.pk,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'username': user.username,
+            'alcohol_permitted': alcohol_permitted,
         },
         'authorization': format_authorization(authorization),
     }
-
-    return res
 
 
 @jsonrpc_method('juliana.order.save(Number,Number,Array,Object) -> Nil', site=api_v1_site, authenticated=True)

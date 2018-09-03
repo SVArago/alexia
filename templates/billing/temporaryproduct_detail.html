@@ -24,6 +24,10 @@
                 <td>&euro; {{ object.price }}</td>
             </tr>
             <tr>
+                <th>{% trans 'Alcohol' %}</th>
+                <td>{{ object.is_alcohol|yesno }}</td>
+            </tr>
+            <tr>
                 <th>{% trans 'Food' %}</th>
                 <td>{{ object.is_food|yesno }}</td>
             </tr>
