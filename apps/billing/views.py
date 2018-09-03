@@ -365,7 +365,7 @@ class TemporaryProductDetailView(TreasurerRequiredMixin, EventOrganizerFilterMix
 
 class TemporaryProductCreateView(TreasurerRequiredMixin, CrispyFormMixin, FixedValueCreateView):
     model = TemporaryProduct
-    fields = ['name', 'price', 'text_color', 'background_color', 'is_food']
+    fields = ['name', 'price', 'text_color', 'background_color', 'is_alcohol', 'is_food']
 
     def get_instance(self):
         event = get_object_or_404(Event, pk=self.kwargs['event_pk'])

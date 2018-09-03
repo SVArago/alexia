@@ -97,6 +97,7 @@ class Product(models.Model):
         max_length=6,
         validators=[validate_color],
     )
+    is_alcohol = models.BooleanField(verbose_name=_('Is alcohol?'), default=False)
     is_food = models.BooleanField(verbose_name=_('Is food?'), default=False)
     deleted = models.BooleanField(verbose_name=_('deleted'), default=False)
 
