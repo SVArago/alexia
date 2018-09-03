@@ -18,6 +18,7 @@ def _get_product_list(event):
             products.append({
                 'id': product.pk,
                 'name': product.name,
+                'alcohol': product.is_alcohol,
                 'text_color': product.text_color,
                 'background_color': product.background_color,
                 'price': int(sellingprice.price * 100),
@@ -30,6 +31,7 @@ def _get_product_list(event):
         products.append({
             'id': product.pk,
             'name': product.name,
+            'alcohol': product.is_alcohol,
             'text_color': product.text_color,
             'background_color': product.background_color,
             'price': int(product.price * 100),

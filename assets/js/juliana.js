@@ -10,6 +10,7 @@ State = {
     ERROR: 2,
     CHECK: 3,
     MESSAGE: 4,
+    UNDERAGE: 5,
 
     current: this.SALES,
     isLoading: false,
@@ -52,6 +53,13 @@ State = {
                 $('#current-message').html(argument);
                 $('#message-screen').show();
                 break;
+            case this.UNDERAGE:
+                console.log('Changing to UNDERAGE...');
+                this.current = this.UNDERAGE;
+                this._hideAllScreens();
+
+                $('#underage-current').html(argument);
+                $('#underage-screen').show();
             default:
                 console.log('Error: switching to unknown state');
                 break;
@@ -70,6 +78,7 @@ State = {
         $('#cashier-screen').hide();
         $('#error-screen').hide();
         $('#message-screen').hide();
+        $('#underage-screen').hide();
     }
 };
 
@@ -245,6 +254,16 @@ Receipt = {
             console.log('Info: receipt empty');
             Display.set('Please select products!');
             return;
+        }
+
+        if (!user.alcohol_permitted) {
+            for (var i = 0; i < Receipt.receipt.length; i++) {
+                if (Settings.products[this.receipt[i].product].alcohol) {
+                    // User is underage and tries to buy alcohol. Deny this sale.
+                    State.toggleTo(State.UNDERAGE, user.first_name + ' ' + user.last_name);
+                    return;
+                }
+            }
         }
 
         console.log('Starting pay countdown');
