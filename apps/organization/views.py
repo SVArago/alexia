@@ -210,9 +210,11 @@ def iva_approve(request, pk):
     if membership.organization != request.organization:
         raise PermissionDenied
 
-    if certificate and not certificate.approved_at:
-        certificate.approve(request.user)
-        return redirect(membership_list)
+    if not certificate:
+        raise Http404
+
+    certificate.approve(request.user)
+    return redirect(membership_list)
 
 
 @login_required
