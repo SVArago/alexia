@@ -450,7 +450,7 @@ $(function () {
                 Receipt.payNow();
                 break;
             case 'payUser':
-                var user = { id: $(this).data('user-id'), first_name: $(this).data('user-first-name'), last_name: $(this).data('user-last-name') };
+                var user = { id: $(this).data('user-id'), first_name: $(this).data('user-first-name'), last_name: $(this).data('user-last-name'), alcohol_permitted: true };
                 Receipt.payForUser(user, null);
                 break;
             case 'ok':
