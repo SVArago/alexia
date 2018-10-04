@@ -22,6 +22,7 @@ class MailTemplate(models.Model):
         ('enrollopen', _('Enrollment open')),
         ('enrollclosed', _('Enrollment closed')),
         ('reminder', _('Reminder')),
+        ('enrolllapsed', _('Enrollment period lapsed'))
     )
 
     organization = models.ForeignKey('organization.Organization', models.CASCADE, verbose_name=_('organization'))
@@ -44,7 +45,7 @@ class MailTemplate(models.Model):
         return reverse('mailtemplate_detail', args=[self.name])
 
     def has_send_at(self):
-        return self.name == 'reminder'
+        return self.name in ['reminder', 'enrolllapsed']
 
 
 @python_2_unicode_compatible
@@ -204,13 +205,9 @@ class Event(models.Model):
         return user in self.get_assigned_bartenders()
 
     def meets_iva_requirement(self):
-        # Result could be cached by earlier call or prefetch
-        if not hasattr(self, 'bartender_availabilities_iva'):
-            self.bartender_availabilities_iva = self.bartender_availabilities.filter(
-                Q(availability__nature=Availability.ASSIGNED),
-                Q(user__profile__is_iva=True) | Q(user__profile__certificate__approved_at__isnull=False)).exists()
-
-        return bool(self.bartender_availabilities_iva)
+        return all([x.profile.is_iva or
+                    x.certificate.approved_at is not None
+                    for x in self.get_assigned_bartenders()])
 
     def needs_iva(self):
         return self.kegs > 0

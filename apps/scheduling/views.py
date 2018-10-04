@@ -49,14 +49,6 @@ def overview(request):
             to_attr='bartender_availabilities_assigned',
         ),
         'bartender_availabilities_assigned__user',
-        Prefetch(
-            'bartender_availabilities',
-            queryset=BartenderAvailability.objects.filter(
-                Q(availability__nature=Availability.ASSIGNED),
-                Q(user__profile__is_iva=True) | Q(user__certificate__approved_at__isnull=False),
-            ),
-            to_attr='bartender_availabilities_iva',
-        ),
      )
 
     # Default from_time is now.

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: alexia\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-04 23:17+0100\n"
+"POT-Creation-Date: 2018-10-04 19:24+0200\n"
 "PO-Revision-Date: 2016-08-08 20:51+0200\n"
 "Last-Translator: Wouter Kobes\n"
 "Language-Team: WWW-commissie <www@inter-actief.net>\n"
@@ -110,6 +110,9 @@ msgstr "Achtergrondkleur"
 msgid "Background color for Juliana"
 msgstr "Achtergrondkleur voor Juliana"
 
+msgid "Is alcohol?"
+msgstr "Is alcohol?"
+
 msgid "Is food?"
 msgstr "Is eten?"
 
@@ -118,6 +121,9 @@ msgstr "verwijderd"
 
 msgid "position"
 msgstr "positie"
+
+msgid "Available"
+msgstr "Beschikbaar"
 
 msgid "event"
 msgstr "activiteit"
@@ -380,6 +386,9 @@ msgstr "Geeft aan dat deze gebruiker manager is van de inkoopstichting."
 msgid "is external entity"
 msgstr "is externe partij"
 
+msgid "birth date"
+msgstr "geboortedatum"
+
 msgid "current organization"
 msgstr "huidige organisatie"
 
@@ -492,6 +501,9 @@ msgstr "Inschrijving gesloten"
 
 msgid "Reminder"
 msgstr "Herinnering"
+
+msgid "Enrollment period lapsed"
+msgstr "Inschrijfperiode afgelopen"
 
 msgid "subject"
 msgstr "onderwerp"
@@ -751,6 +763,21 @@ msgstr "Gebruikersnaam"
 msgid "Password"
 msgstr "Wachtwoord"
 
+msgid "Delete order #%(id)s"
+msgstr "Verwijder bestelling %(id)s"
+
+msgid "Delete payment #%(id)s"
+msgstr "Verwijder betaling %(id)s"
+
+msgid "Are you sure you want to delete payment #%(id)s of %(user)s?"
+msgstr "Weet je zeker dat je betaling #%(id)s van %(user)s wilt verwijderen?"
+
+msgid "Delete"
+msgstr "Verwijderen"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
 #, python-format
 msgid "Add orders for %(event)s"
 msgstr "Bestellingen toevoegen voor %(event)s"
@@ -779,8 +806,8 @@ msgstr "Naam"
 msgid "Product group"
 msgstr "Productgroep"
 
-msgid "Available"
-msgstr "Beschikbaar"
+msgid "Alcohol"
+msgstr "Alcohol"
 
 msgid "Food"
 msgstr "Eten"
@@ -813,9 +840,6 @@ msgstr "Toevoegen"
 
 msgid "Actions"
 msgstr "Acties"
-
-msgid "Delete"
-msgstr "Verwijderen"
 
 msgid "No permanent products defined."
 msgstr "Geen permanente producten gedefinieerd."
@@ -853,9 +877,6 @@ msgstr "Verwijder product %(object)s"
 #, python-format
 msgid "Are you sure you want to delete product \"%(object)s\"?"
 msgstr "Weet je zeker dat je product %(object)s wil verwijderen?"
-
-msgid "Cancel"
-msgstr "Annuleren"
 
 #, python-format
 msgid "Delete productgroup %(object)s"

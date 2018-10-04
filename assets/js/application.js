@@ -60,11 +60,6 @@ $(function () {
 	modal.modal('hide');
     });
 
-    $('.timeinput').timepicker({
-        defaultTime: false,
-        showMeridian: false
-    });
-
     $('[data-toggle="tooltip"]').tooltip();
 
     $('#ical-copy').click(function() {
