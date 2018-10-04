@@ -424,6 +424,8 @@ $(function () {
     });
 
     $('.command').click(function () {
+        var returnValue = undefined;
+
         switch ($(this).data('command')) {
             case 'clear':
                 Display.set('?');
@@ -431,6 +433,7 @@ $(function () {
             case 'sales':
                 var count = !Input.read() ? 1 : Input.read();
                 Receipt.add($(this).data('product'), count);
+                returnValue = false; // don't scroll up after adding a product
                 break;
             case 'cancelPayment':
                 Receipt.clear();
@@ -463,5 +466,6 @@ $(function () {
         }
 
         Input.reset();
+        return returnValue;
     });
 });
