@@ -22,6 +22,7 @@ class MailTemplate(models.Model):
         ('enrollopen', _('Enrollment open')),
         ('enrollclosed', _('Enrollment closed')),
         ('reminder', _('Reminder')),
+        ('enrolllapsed', _('Enrollment period lapsed'))
     )
 
     organization = models.ForeignKey('organization.Organization', models.CASCADE, verbose_name=_('organization'))
@@ -44,7 +45,7 @@ class MailTemplate(models.Model):
         return reverse('mailtemplate_detail', args=[self.name])
 
     def has_send_at(self):
-        return self.name == 'reminder'
+        return self.name in ['reminder', 'enrolllapsed']
 
 
 @python_2_unicode_compatible
