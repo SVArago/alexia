@@ -6,6 +6,7 @@ from django.db.models import Count, Sum
 from django.db.models.functions import Coalesce, ExtractYear, ExtractMonth
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView, FormView
@@ -31,7 +32,7 @@ from .models import Order, Purchase
 @login_required
 @treasurer_required
 def order_list(request):
-    event_list = Event.objects.filter(organizer=request.organization) \
+    event_list = Event.objects.filter(organizer=request.organization, starts_at__lte=timezone.now()) \
         .annotate(order_count=Coalesce(Count('orders'), 0), revenue=Coalesce(Sum('orders__amount'), 0)) \
         .order_by('-starts_at')
     paginator = Paginator(event_list, 20)
