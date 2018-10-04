@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Sum
-from django.db.models.functions import ExtractYear, ExtractMonth
+from django.db.models.functions import Coalesce, ExtractYear, ExtractMonth
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import RedirectView, TemplateView
@@ -32,8 +32,7 @@ from .models import Order, Purchase
 @treasurer_required
 def order_list(request):
     event_list = Event.objects.filter(organizer=request.organization) \
-        .annotate(order_count=Count('orders'), revenue=Sum('orders__amount')) \
-        .filter(order_count__gt=0, ) \
+        .annotate(order_count=Coalesce(Count('orders'), 0), revenue=Coalesce(Sum('orders__amount'), 0)) \
         .order_by('-starts_at')
     paginator = Paginator(event_list, 20)
 
