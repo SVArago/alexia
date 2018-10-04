@@ -205,7 +205,8 @@ class Event(models.Model):
         return user in self.get_assigned_bartenders()
 
     def meets_iva_requirement(self):
-        return all([x.profile.is_iva or
+        return len(self.get_assigned_bartenders()) > 0 and \
+               all([x.profile.is_iva or
                     x.certificate.approved_at is not None
                     for x in self.get_assigned_bartenders()])
 
