@@ -25,7 +25,7 @@
             {% for t in tenders %}
             <tr>
                 <td><a href="{% url 'membership' t.tender.id %}">{{ t.tender.user.get_full_name }}</a></td>
-                <td>{{ t.tended }}</td>
+                <td title="{% trans 'Afgelopen jaar (totaal)' %}">{{ t.tended_year }} ({{ t.tended }})</td>
                 <td>
                     <span {% if t.last_tended %}title="{{ t.last_tended }}"{% endif %}>
                         {% if t.last_tended %}{{ t.last_tended.starts_at|date:"j b Y" }}{% else %}{% trans 'Never' %}{% endif %}

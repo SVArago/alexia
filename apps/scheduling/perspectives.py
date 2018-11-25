@@ -42,6 +42,7 @@ def matrix(request):
                 is_active=True) \
         .order_by("user__first_name")
 
+    year_ago = timezone.now() - datetime.timedelta(days=365)
     tenders = []
     for tender in tenders_list:
         tender_availabilities_comments = [
@@ -49,10 +50,12 @@ def matrix(request):
             events]
         tender_events = [{'event': event, 'availability': availability, 'comment': comment} for event, availability, comment in
                          zip(events, *zip(*tender_availabilities_comments))]
-        tended = [a.event for a in tender.tended() if a.event.starts_at < timezone.now()]
+        tended = [a.event for a in tender.tended()]
+        tended_year = len([e for e in tended if e.starts_at >= year_ago])
         tenders.append({
             'tender': tender,
             'tended': len(tended),
+            'tended_year': tended_year,
             'last_tended': tended[0] if tended else None,
             'events': tender_events
         })
