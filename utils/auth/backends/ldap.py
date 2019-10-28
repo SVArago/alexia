@@ -4,6 +4,6 @@ from utils.auth.backends import get_or_create_user
 
 
 class MultiLDAPBackend(LDAPBackend):
-    def get_or_create_user(self, username, ldap_user):
+    def get_or_build_user(self, username, ldap_user):
         backend = self.__module__ + "." + self.__class__.__name__
         return get_or_create_user(backend, username)
